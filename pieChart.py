@@ -10,7 +10,7 @@ class testWindow(QMainWindow):
         super().__init__()
 
         self.setWindowTitle("PyQt Piechart")
-        self.setGeometry(100,100, 680, 500)
+        self.setGeometry(100, 100, 680, 500)
 
         self.create_piechart()
         self.show()
@@ -27,8 +27,16 @@ class testWindow(QMainWindow):
             series.append(mood, count)
 
         color_palette = [
-            Qt.red, Qt.green, Qt.blue, Qt.yellow, Qt.cyan,
-            Qt.magenta, Qt.darkRed, Qt.darkGreen, Qt.darkBlue
+            '#F3C0E1', #Excited
+            '#FBEEB1', #Happy
+            '#9A98C7', #Proud
+            '#865C82', #Content
+            '#C1C1C1', #Unsure
+            '#EB9573', #Sick
+            '#619A99', #Stressed
+            '#779BDA', #Angry
+            '#E4DCCF', #Sad
+            '#40638C'  #Tired
         ]
 
         for i, slice in enumerate(series.slices()):

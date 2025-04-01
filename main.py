@@ -1,4 +1,4 @@
-## This is the connections between the Backend and the Frontend
+## This is the connections between the Backend and the Frontend so they can be called
 ## When the methods are called they communicate with AWS and FastAPI to get the data from the database
 ## The data is then returned to the Frontend to be displayed
 
