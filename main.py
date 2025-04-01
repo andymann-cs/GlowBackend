@@ -16,14 +16,14 @@ def read_root():
     return {"message": "Hello, world!"}
 
 
-@app.get("/moods/user/{user_id}")
+@app.get("/moods/userID/getUserID/{user_id}")
 async def getUserID(user_id: str):
     try:
         return db.getUserID(user_id)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
     
-@app.get("/moods/user/{username}")
+@app.get("/moods/username/getUsername/{username}")
 async def getUsername(username: str):
     try:
         return db.getUsername(username)
