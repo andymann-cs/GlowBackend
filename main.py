@@ -1,3 +1,7 @@
+## This is the connections between the Backend and the Frontend
+## When the methods are called they communicate with AWS and FastAPI to get the data from the database
+## The data is then returned to the Frontend to be displayed
+
 from fastapi import FastAPI, HTTPException
 from pymongo import MongoClient
 from moods import DB_CRUD
