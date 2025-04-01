@@ -5,12 +5,12 @@ import datetime
 import random
 
 class DB_CRUD():
-    def __init__(self):
+    def __init__(self, db):
         #self.uri = "mongodb+srv://sam_user:9ireiEodVKBb3Owt@glowcluster.36bwm.mongodb.net/?retryWrites=true&w=majority&appName=GlowCluster"
         #self.uri = "mongodb+srv://user_app:8JSL3N0uHNjSwnmY@glowcluster.36bwm.mongodb.net/?retryWrites=true&w=majority&appName=GlowCluster"
         #self.client = MongoClient(self.uri)
-        self.client = MongoClient("mongodb+srv://user_app:8JSL3N0uHNjSwnmY@glowcluster.36bwm.mongodb.net/?retryWrites=true&w=majority&appName=GlowCluster")
-        self.db = self.client["mood_tracker"]
+        #self.client = MongoClient("mongodb+srv://user_app:8JSL3N0uHNjSwnmY@glowcluster.36bwm.mongodb.net/?retryWrites=true&w=majority&appName=GlowCluster")
+        self.db = db
         
         #Set collection to moods initially FOR NOW
         #self.collection = self.db["moods"]
