@@ -11,6 +11,11 @@ app = FastAPI()
 db = DB_CRUD()
 
 
+@app.get("/")
+def read_root():
+    return {"message": "Hello, world!"}
+
+
 @app.get("/moods/user/{user_id}")
 async def getUserID(user_id: str):
     try:
