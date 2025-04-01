@@ -11,9 +11,8 @@ import os
 
 load_dotenv()
 mongo_uri = os.getenv("MONGO_URI")
-print("1")
-print(mongo_uri)
-print("2")
+print(f"MONGO_URI is: {mongo_uri}")
+
 
 client = MongoClient(mongo_uri)
 db = client["mood_tracker"]
