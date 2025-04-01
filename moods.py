@@ -152,8 +152,8 @@ class DB_CRUD():
 # else:
 #     print( {"error" : "User does not exist"})
 
-client = MongoClient("mongodb+srv://sam_user:9ireiEodVKBb3Owt@glowcluster.36bwm.mongodb.net/?retryWrites=true&w=majority&appName=GlowCluster")
-db = client["mood_tracker"]
-collection = db["accounts"]
-result = collection.find_one({"username": "sammy"})
-print(result["username"] if result else None)
+# client = MongoClient("mongodb+srv://sam_user:9ireiEodVKBb3Owt@glowcluster.36bwm.mongodb.net/?retryWrites=true&w=majority&appName=GlowCluster")
+# db = client["mood_tracker"]
+# collection = db["accounts"]
+# result = collection.find_one({"username": "sammy"})
+# print(result["username"] if result else None)

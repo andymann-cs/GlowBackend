@@ -11,12 +11,15 @@ import os
 
 load_dotenv()
 mongo_uri = os.getenv("MONGO_URI")
+print("1")
+print(mongo_uri)
+print("2")
 
 client = MongoClient(mongo_uri)
 db = client["mood_tracker"]
 
 app = FastAPI()
-db_crud = DB_CRUD()
+db_crud = DB_CRUD(db)
 
 
 @app.get("/")
