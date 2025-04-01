@@ -30,25 +30,25 @@ def read_root():
 @app.get("/moods/userID/getUserID/{user_id}")
 async def getUserID(user_id: str):
     try:
-        return db.getUserID(user_id)
+        return db_crud.getUserID(user_id)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
     
 @app.get("/moods/username/getUsername/{username}")
 async def getUsername(username: str):
     try:
-        return db.getUsername(username)
+        return db_crud.getUsername(username)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))    
 
 @app.post("/moods/insert")
 async def insertMood(data: dict):
-    db.insertMood(**data)
+    db_crud.insertMood(**data)
     return {"message": "Mood inserted successfully"}
 
 @app.get("/moods/get/{username}")
 async def getRandomActivity(username: str):
     try:
-        return db.getRandomActivity(username)
+        return db_crud.getRandomActivity(username)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
