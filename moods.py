@@ -6,8 +6,10 @@ import random
 
 class DB_CRUD():
     def __init__(self):
-        self.uri = "mongodb+srv://user_app:8JSL3N0uHNjSwnmY@glowcluster.36bwm.mongodb.net/?retryWrites=true&w=majority&appName=GlowCluster"
-        self.client = MongoClient(self.uri)
+        #self.uri = "mongodb+srv://sam_user:9ireiEodVKBb3Owt@glowcluster.36bwm.mongodb.net/?retryWrites=true&w=majority&appName=GlowCluster"
+        #self.uri = "mongodb+srv://user_app:8JSL3N0uHNjSwnmY@glowcluster.36bwm.mongodb.net/?retryWrites=true&w=majority&appName=GlowCluster"
+        #self.client = MongoClient(self.uri)
+        self.client = MongoClient("mongodb+srv://user_app:8JSL3N0uHNjSwnmY@glowcluster.36bwm.mongodb.net/?retryWrites=true&w=majority&appName=GlowCluster")
         self.db = self.client["mood_tracker"]
         
         #Set collection to moods initially FOR NOW
@@ -138,3 +140,20 @@ class DB_CRUD():
         activity = random.randint(0,len(exerciseList)-1)
 
         return exerciseList[activity]
+
+
+# uri = "mongodb+srv://user_app:8JSL3N0uHNjSwnmY@glowcluster.36bwm.mongodb.net/?retryWrites=true&w=majority&appName=GlowCluster"
+# client = MongoClient(uri)
+# db = client["mood_tracker"]
+# collection = db["accounts"]
+# user = collection.find_one({"username": "sammy"})
+# if user:
+#     print( {"user_id": str(user["_id"])})
+# else:
+#     print( {"error" : "User does not exist"})
+
+client = MongoClient("mongodb+srv://sam_user:9ireiEodVKBb3Owt@glowcluster.36bwm.mongodb.net/?retryWrites=true&w=majority&appName=GlowCluster")
+db = client["mood_tracker"]
+collection = db["accounts"]
+result = collection.find_one({"username": "sammy"})
+print(result["username"] if result else None)
