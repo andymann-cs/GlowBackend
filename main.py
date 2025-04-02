@@ -14,9 +14,8 @@ mongo_uri = os.getenv("MONGO_URI")
 print(f"MONGO_URI is: {mongo_uri}")
 
 
-client = MongoClient(mongo_uri)
+client = MongoClient("mongodb+srv://sam_user:9ireiEodVKBb3Owt@glowcluster.36bwm.mongodb.net/?retryWrites=true&w=majority&appName=GlowCluster")
 db = client["mood_tracker"]
-
 app = FastAPI()
 db_crud = DB_CRUD(db)
 
