@@ -18,7 +18,7 @@ class testWindow(QMainWindow):
 
     def create_piechart(self):
         abc = DB_CRUD()
-        a = abc.getMonthlyMood("67e373c2300f98be0a832ffc", 2, 2025)
+        a = abc.convertMoodListToDict(abc.getMonthlyMoodList("67e373c2300f98be0a832ffc", 2, 2025))
         print(a)
 
         series = QPieSeries()

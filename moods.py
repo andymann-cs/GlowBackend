@@ -6,6 +6,7 @@ import random
 
 class DB_CRUD():
     def __init__(self, db):
+        self.factors = ["mood", "alcohol", "sleep", "screen", "exercise"]
         #self.uri = "mongodb+srv://sam_user:9ireiEodVKBb3Owt@glowcluster.36bwm.mongodb.net/?retryWrites=true&w=majority&appName=GlowCluster"
         #self.uri = "mongodb+srv://user_app:8JSL3N0uHNjSwnmY@glowcluster.36bwm.mongodb.net/?retryWrites=true&w=majority&appName=GlowCluster"
         #self.client = MongoClient(self.uri)
@@ -17,6 +18,12 @@ class DB_CRUD():
 
 
     #Consider Validation and error handling
+
+    def checkValidFactor(self, testFactor):
+        if testFactor in self.factors:
+            return True
+        else:
+            return False
 
     def getUserID(self, username):
         self.collection = self.db["accounts"]
@@ -42,7 +49,7 @@ class DB_CRUD():
 
 
     #date as unique?? or id
-    def insertMood(self, username, mood, sleep, screen, exercise, alcohol, date):
+    def insertMood(self, username, mood, sleep, screen, exercise, alcohol, date, diary):
         self.collection = self.db["moods"]
         username = self.getUserID(username)
         if not username:
@@ -55,7 +62,8 @@ class DB_CRUD():
                 "exercise": exercise,
                 "screen": screen,
                 "sleep": sleep,                
-                "date": date
+                "date": date,
+                "diary": diary
         }
         self.collection.insert_one(example)
         
@@ -103,12 +111,19 @@ class DB_CRUD():
 
 
 
-    def getMonthlyMood(self, userID, month, year):
+    def getMonthlyMoodList(self, userID, month, year, factor):
+        if not self.checkValidFactor(factor):
+            return None
+        
         self.collection = self.db["moods"]
-
-        moodData = {}
+        moodDict = {}
+        allDocs = []
         start = f"{year}-{month:02d}-01"
-        end = f"{year}-{month+1:02d}-01"
+
+        if month == 12:
+            end = f"{year+1}-01-01"
+        else:
+            end = f"{year}-{month+1:02d}-01"
 
         retrievedDocs = self.collection.find({
             "user_id":userID,
@@ -120,14 +135,29 @@ class DB_CRUD():
         )
 
         for doc in retrievedDocs:
-            docMood = doc.get("mood")
+            docDate = doc.get("date")
+            docMood = doc.get(factor)
+            moodDict[docDate] = docMood
+
+        for day in range(1, 31+1):
+            currentDay = f"{year}-{month:02d}-{day:02d}"
+
+            if currentDay in moodDict:
+                allDocs.append(moodDict[currentDay])
+            else:
+                allDocs.append(None)
+        return allDocs
+        
+
+    def convertMoodDictToChartDict(self, dictOfMoods):
+        moodData = {}
+        for docMood in dictOfMoods.values():
             if docMood in moodData:
                 moodData[docMood] += 1
             else:
                 moodData[docMood] = 1
-
         return moodData
-        
+
 
     def deleteUserRecords(self, userID):
         self.collection = self.db["accounts"] 
