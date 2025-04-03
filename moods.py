@@ -7,6 +7,7 @@ import random
 class DB_CRUD():
     def __init__(self, db):
         self.factors = ["mood", "alcohol", "sleep", "screen", "exercise"]
+        self.moodList = ["angry", "sad", "tired", "happy", "content", "excited", "proud", "stressed", "sick", "unsure"]
         #self.uri = "mongodb+srv://sam_user:9ireiEodVKBb3Owt@glowcluster.36bwm.mongodb.net/?retryWrites=true&w=majority&appName=GlowCluster"
         #self.uri = "mongodb+srv://user_app:8JSL3N0uHNjSwnmY@glowcluster.36bwm.mongodb.net/?retryWrites=true&w=majority&appName=GlowCluster"
         #self.client = MongoClient(self.uri)
@@ -21,6 +22,12 @@ class DB_CRUD():
 
     def checkValidFactor(self, testFactor):
         if testFactor in self.factors:
+            return True
+        else:
+            return False
+        
+    def checkValidMood(self, mood):
+        if mood in self.moodList:
             return True
         else:
             return False
@@ -50,13 +57,14 @@ class DB_CRUD():
 
     #date as unique?? or id
     def insertMood(self, username, mood, sleep, screen, exercise, alcohol, date, diary):
+
         self.collection = self.db["moods"]
-        username = self.getUserID(username)
+        userID = self.getUserID(username)
         if not username:
             return {"error" : "User Does Not Exist"}
         
         example = {
-                "userID": username,
+                "userID": userID,
                 "mood": mood,
                 "alcohol": alcohol,
                 "exercise": exercise,
@@ -69,10 +77,10 @@ class DB_CRUD():
         
         return{"may" : "have worked?"}
 
-    def getMoods(self, username):
-        self.collection = self.db["moods"]
-        mood = self.collection.find({"user_id" : self.getUserID(username)})
-        return mood
+    # def getMoods(self, username):
+    #     self.collection = self.db["moods"]
+    #     mood = self.collection.find({"user_id" : self.getUserID(username)})
+    #     return mood
 
     #Need to change the time
     # def getLastWeekMoods(self, username):
@@ -111,7 +119,7 @@ class DB_CRUD():
 
 
 
-    def getMonthlyMoodList(self, userID, month, year, factor):
+    def getMonthlyFactorList(self, userID, month, year, factor):
         if not self.checkValidFactor(factor):
             return None
         

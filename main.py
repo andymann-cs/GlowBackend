@@ -6,7 +6,20 @@ from fastapi import FastAPI, HTTPException
 from pymongo import MongoClient
 from moods import DB_CRUD
 from dotenv import load_dotenv
+from pydantic import BaseModel
+from typing import Optional
 import os
+
+
+class MoodData(BaseModel):
+    mood: str
+    sleep: float
+    screen: float
+    exercise: float
+    alcohol: float
+    date: str
+    diary: Optional[str] = None
+
 
 
 load_dotenv()
@@ -39,14 +52,24 @@ async def getUsername(username: str):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))    
 
-@app.post("/moods/insert")
-async def insertMood(data: dict):
-    db_crud.insertMood(**data)
+@app.post("/moods/{username}/insert")
+async def insertMood(username: str, data: MoodData):
+    db_crud.insertMood(username=username, **data)
     return {"message": "Mood inserted successfully"}
 
-@app.get("/moods/get/{username}")
+@app.get("/moods/{username}/random_activity")
 async def getRandomActivity(username: str):
     try:
         return db_crud.getRandomActivity(username)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+    
+@app.get("/moods/monthly/{username},{month},{year},{factor}")
+async def getMonthlyFactorList(username: str, month: int, year: int, factor: str):
+    if not db_crud.checkValidFactor(factor):
+       raise HTTPException(status_code=400, detail="Invalid factor")
+    try:
+        return db_crud.getMonthlyFactorList(username, month, year, factor))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    
