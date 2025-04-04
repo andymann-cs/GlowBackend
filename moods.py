@@ -119,10 +119,14 @@ class DB_CRUD():
 
 
 
-    def getMonthlyFactorList(self, userID, month, year, factor):
+    def getMonthlyFactorList(self, username, month, year, factor):
         if not self.checkValidFactor(factor):
             return None
         
+        userID = self.getUserID(username)["user_id"]
+        if not userID:
+            return {"error": "User does not exist"}
+
         self.collection = self.db["moods"]
         moodDict = {}
         allDocs = []
@@ -132,7 +136,7 @@ class DB_CRUD():
             end = f"{year+1}-01-01"
         else:
             end = f"{year}-{month+1:02d}-01"
-
+        
         retrievedDocs = self.collection.find({
             "user_id":userID,
             "date": { 
@@ -146,6 +150,7 @@ class DB_CRUD():
             docDate = doc.get("date")
             docMood = doc.get(factor)
             moodDict[docDate] = docMood
+        
 
         for day in range(1, 31+1):
             currentDay = f"{year}-{month:02d}-{day:02d}"
@@ -157,9 +162,9 @@ class DB_CRUD():
         return allDocs
         
 
-    def convertMoodDictToChartDict(self, dictOfMoods):
+    def convertMoodListToChartDict(self, listOfMoods):
         moodData = {}
-        for docMood in dictOfMoods.values():
+        for docMood in listOfMoods:
             if docMood in moodData:
                 moodData[docMood] += 1
             else:
