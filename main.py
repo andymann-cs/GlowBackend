@@ -64,7 +64,7 @@ async def getRandomActivity(username: str):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
     
-@app.get("/moods/monthly/{username},{month},{year},{factor}")
+@app.get("/moods/monthly/{username}/{month}/{year}/{factor}")
 async def getMonthlyFactorList(username: str, month: int, year: int, factor: str):
     if not db_crud.checkValidFactor(factor):
        raise HTTPException(status_code=400, detail="Invalid factor")
