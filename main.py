@@ -69,7 +69,7 @@ async def getMonthlyFactorList(username: str, month: int, year: int, factor: str
     if not db_crud.checkValidFactor(factor):
        raise HTTPException(status_code=400, detail="Invalid factor")
     try:
-        return db_crud.getMonthlyFactorList(username, month, year, factor))
+        return db_crud.getMonthlyFactorList(username, month, year, factor)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
     
