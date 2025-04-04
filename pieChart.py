@@ -23,7 +23,7 @@ class testWindow(QMainWindow):
 
         series = QPieSeries()
 
-        for mood, count in a.items():
+        for mood, count in a.items(): #Happiness, 6
             series.append(mood, count)
 
         color_palette = [
