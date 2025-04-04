@@ -1,15 +1,17 @@
 def get_nhs_search_urls(keywords):
     nhs_search_urls = []
-    formatted_keywords = keywords.split(",")
-    for k in formatted_keywords:
-        k = k.strip()
-        nhs_search_urls.append(f"https://www.nhs.uk/search/results?q={k}")
+    if "," not in keywords:  
+        keywords = keywords.replace(" ", "%20").strip() 
+        nhs_search_urls.append(f"https://www.nhs.uk/search/results?q={keywords}")
+    else:  
+        for keyword in keywords.split(","):
+            keyword = keyword.replace(" ", "%20").strip()
+            if keyword: 
+                nhs_search_urls.append(f"https://www.nhs.uk/search/results?q={keyword}")
     return nhs_search_urls
 
-# Example usage, using bad spacing and typos in the keywords
-keywords = "coughing ,  bleeding, sneexing, sore throat"
+keywords = "moderate exercise"  
 search_urls = get_nhs_search_urls(keywords)
 for url in search_urls:
     print(url)
-
 
