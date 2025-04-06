@@ -59,11 +59,11 @@ class DB_CRUD():
     def insertMood(self, username, mood, sleep, screen, exercise, alcohol, date, diary):
 
         self.collection = self.db["moods"]
-        userID = self.getUserID(username)
-        if not username:
+        userID = self.getUserID(username)["user_id"]
+        if not userID:
             return {"error" : "User Does Not Exist"}
         
-        example = {
+        mood_entry = {
                 "userID": userID,
                 "mood": mood,
                 "alcohol": alcohol,
@@ -73,9 +73,9 @@ class DB_CRUD():
                 "date": date,
                 "diary": diary
         }
-        self.collection.insert_one(example)
+        self.collection.insert_one(mood_entry)
         
-        return{"may" : "have worked?"}
+        return{"attempt" : "successful"}
 
     # def getMoods(self, username):
     #     self.collection = self.db["moods"]
@@ -93,11 +93,11 @@ class DB_CRUD():
     def updateMood(self, username, mood, alcohol, exercise, screen, sleep, date):
         self.collection = self.db["moods"]
 
-        userID = self.getUserID(username)
-        if not userID:
+        user_id = self.getUserID(username)["user_id"]
+        if not user_id:
             return {"error": "User does not exist"}
 
-        requirement = {"user_id": userID, "date": date}
+        requirement = {"user_id": user_id, "date": date}
 
         changes = {
             "$set": {
@@ -108,16 +108,16 @@ class DB_CRUD():
                     "alcohol" : alcohol
                     }
                 }
-        self.collection.update_one(requirement, changes)
+        result = self.collection.update_one(requirement, changes)
+        if result.matched_count == 0:
+            return {"error": "No matching mood entry found to update"}
+        return {"message": "Mood updated successfully"}
 
 
-
-    def deleteMood(self, userID):
+    def deleteMood(self, username):
         self.collection = self.db["moods"]
-        self.collection.delete_many({"user_id": userID, 
-                                   })
-
-
+        user_id = self.getUserID(username)["user_id"]
+        self.collection.delete_many({"user_id": user_id})
 
     def getMonthlyFactorList(self, username, month, year, factor):
         if not self.checkValidFactor(factor):
@@ -161,7 +161,6 @@ class DB_CRUD():
                 allDocs.append(None)
         return allDocs
         
-
     def convertMoodListToChartDict(self, listOfMoods):
         moodData = {}
         for docMood in listOfMoods:
@@ -171,10 +170,9 @@ class DB_CRUD():
                 moodData[docMood] = 1
         return moodData
 
-
-    def deleteUserRecords(self, userID):
+    def deleteUserRecords(self, username):
         self.collection = self.db["accounts"] 
-        docs = self.collection.delete_many({"user_id": userID})
+        self.collection.delete_many({"username": username})
 
     def getRandomActivity(self, username):
         self.collection = self.db["accounts"]
@@ -183,6 +181,26 @@ class DB_CRUD():
         activity = random.randint(0,len(exerciseList)-1)
 
         return exerciseList[activity]
+
+    def addCustomActivity(self, username, activityName):
+        self.collection = self.db["accounts"]
+        result = self.collection.update_one(
+            {"username": username}, {"addToSet": {"exercises": activityName}}
+        )
+        if result.matched_count == 0:
+            return {"error": "User not found"}
+        elif result.modified_count == 0:
+            return {"message": "Activity already exists"}
+        else:
+            return {"message": "Activity added successfully"}
+
+    def hasLoggedMoodToday(self, username, date):
+        self.collection = self.db["moods"]
+        user_id = self.getUserID(username)["user_id"]
+        mood = self.collection.find_one({"user_id": user_id, "date": date})
+        return {"logged": bool(mood)}
+
+
 
 
 # uri = "mongodb+srv://user_app:8JSL3N0uHNjSwnmY@glowcluster.36bwm.mongodb.net/?retryWrites=true&w=majority&appName=GlowCluster"

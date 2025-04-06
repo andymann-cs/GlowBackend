@@ -57,13 +57,21 @@ async def insertMood(username: str, data: MoodData):
     db_crud.insertMood(username=username, **data)
     return {"message": "Mood inserted successfully"}
 
-@app.get("/moods/{username}/random_activity")
+@app.get("/accounts/{username}/getRandomActivity")
 async def getRandomActivity(username: str):
     try:
         return db_crud.getRandomActivity(username)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/accounts/{username}/addActivity")
+async def addCustomActivity(username: str, activity: str):
+    result = db_crud.addCustomActivity(username, activity)
+    if "error" in result:
+        raise HTTPException(status_code=404, detail=result["error"])
+    return result
     
+
 @app.get("/moods/monthly/{username}/{month}/{year}/{factor}")
 async def getMonthlyFactorList(username: str, month: int, year: int, factor: str):
     if not db_crud.checkValidFactor(factor):
@@ -73,3 +81,44 @@ async def getMonthlyFactorList(username: str, month: int, year: int, factor: str
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
     
+
+@app.put("/moods/{username}/update")
+async def updateMood(username: str, date: str, data: MoodData):
+    try:
+        result = db_crud.updateMood(username=username,
+                                    mood=data.mood,
+                                    alcohol=data.alcohol,
+                                    exercise=data.exercise,
+                                    screen=data.screen,
+                                    sleep=data.sleep,
+                                    date=date
+                                )
+        
+        if "error" in result:
+            raise HTTPException(status_code=404, detail="uh oh")
+        return result
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))    
+
+@app.delete("/moods/{username}/delete")
+async def deleteAllMoods(username: str):
+    try:
+        db_crud.deleteMood(username=username)
+        return {"message": f"All mood entries relating to {username} have been deleted!"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))    
+    
+@app.delete("/accounts/{username}/delete")
+async def deleteUser(username: str):
+    try:
+        db_crud.deleteUserRecords(username=username)
+        return {"message": f"User {username} have been deleted!"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))    
+    
+@app.get("/moods/{username}/hasLoggedIn/{date}")
+async def hasLoggedIn(username: str, date: str):
+    try:
+        return db_crud.hasLoggedMoodToday(username, date)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
