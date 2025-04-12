@@ -13,9 +13,9 @@ class genFakeData:
         self.start = datetime(2025,1,1)
         self.end = datetime(2025,12,31)
 
-        self.client = MongoClient("mongodb+srv://second_admin:hL9l8r6liQROX0Up@glowcluster.36bwm.mongodb.net/?retryWrites=true&w=majority&appName=GlowCluster")
-        self.db = self.client["mood_tracker"]
-        self.collection = self.db["moods"]
+        # self.client = MongoClient("mongodb+srv://second_admin:hL9l8r6liQROX0Up@glowcluster.36bwm.mongodb.net/?retryWrites=true&w=majority&appName=GlowCluster")
+        # self.db = self.client["mood_tracker"]
+        # self.collection = self.db["moods"]
 
     def genData(self):
         data = []
