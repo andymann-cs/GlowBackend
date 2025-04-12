@@ -104,20 +104,21 @@ async def updateMood(username: str, date: str, data: MoodData):
         raise HTTPException(status_code=500, detail=str(e))    
 
 #Calls deleteAllMoods from moods.py taking the username from the parameter
-@app.delete("/moods/{username}/delete")
-async def deleteAllMoods(username: str):
-    try:
-        return db_crud.deleteMood(username)
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))    
-    
-
-#Calls deleteUserRecords from moods.py taking the username from the parameter
 @app.delete("/moods/{username}/deleteAll")
 async def deleteAllMoods(username: str):
     try:
-        result = db_crud.deleteAllMoods(username=username)
+        result = db_crud.deleteAllMoods(username)
         return {"message": f"All moods for {username} have been deleted.", "result": result}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))   
+    
+
+#Calls deleteUserRecords from moods.py taking the username from the parameter
+@app.delete("/accounts/{username}/delete")
+async def deleteUser(username: str):
+    try:
+        db_crud.deleteUserRecords(username=username)
+        return {"message": f"User {username} have been deleted!"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))    
     
