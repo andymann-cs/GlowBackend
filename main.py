@@ -4,11 +4,14 @@
 
 from fastapi import FastAPI, HTTPException, Query
 from pymongo import MongoClient
-from moods import DB_CRUD
 from dotenv import load_dotenv
 from pydantic import BaseModel
 from typing import Optional
 from datetime import datetime
+
+from moods import DB_CRUD
+from nhslink import get_nhs_search_urls
+
 import os
 
 
@@ -142,3 +145,8 @@ async def hasLoggedIn(username: str, date: str):
         return db_crud.hasLoggedMoodToday(username, date)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+    
+@app.get("/nhs-search")
+def nhs_search(keywords: str):
+    search_urls = get_nhs_search_urls(keywords)
+    return {"search_urls": search_urls}

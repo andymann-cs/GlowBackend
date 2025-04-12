@@ -222,7 +222,7 @@ class DB_CRUD():
                 moodData[docMood] = 1
         return moodData
 
-    def mostPopularFactor30Days (self, username, end_date=None):
+    #def mostPopularFactor30Days (self, username, end_date=None):
 
 
 
