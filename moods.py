@@ -117,11 +117,13 @@ class DB_CRUD():
     #delete every mood entry from the moods collection
     def deleteMood(self, username):
         self.collection = self.db["moods"]
-
+        
+        # Get the user_id for the specified username
         user_id = self.getUserID(username)["user_id"]
         if not user_id:
-            return {"error": "User does not exist"}  
+            return {"error": "User does not exist"}  # Just in case the user is not found
 
+        # Debug print statements to check user_id value
         print(f"Retrieved user_id: {user_id}")
         
         # Deleting the mood entries for the specified user_id
@@ -132,16 +134,17 @@ class DB_CRUD():
 
         # Query again to check if any documents with this user_id still exist
         docs = self.collection.find({"user_id": user_id})
-        if docs.count() == 0:  # Check if no documents are left
-            print("No documents found after deletion")
-        else:
-            print(f"Documents still exist: {docs.count()}")
+        
+        # Use count_documents instead of count for cursor objects
+        remaining_docs = self.collection.count_documents({"user_id": user_id})
+        print(f"Documents left after deletion: {remaining_docs}")
 
         # Return the appropriate message based on the deletion result
         if result.deleted_count > 0:
             return {"message": f"Successfully deleted {result.deleted_count} mood entries"}
         else:
             return {"error": "No matching mood entries found to delete"}
+
 
     #Grab a list of the specified factor for the whole of a month
     def getMonthlyFactorList(self, username, month, year, factor):
