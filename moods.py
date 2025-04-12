@@ -120,7 +120,13 @@ class DB_CRUD():
         user_id = self.getUserID(username)["user_id"]
         print(f"Retrieved user_id: {user_id}")
         print(f"Deleting moods with query: {{'user_id': {user_id}}}")
-        self.collection.delete_many({"user_id": user_id})
+  
+        result = self.collection.delete_many({"user_id": user_id})
+    
+        if result.deleted_count > 0:
+            return {"message": f"Successfully deleted {result.deleted_count} mood entries"}
+        else:
+            return {"error": "No matching mood entries found to delete"}
 
     #Grab a list of the specified factor for the whole of a month
     def getMonthlyFactorList(self, username, month, year, factor):
