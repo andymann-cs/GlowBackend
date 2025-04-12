@@ -120,8 +120,8 @@ class DB_CRUD():
         self.collection = self.db["moods"]
         
         # Get the user_id for the specified username
-        #user_id = self.getUserID(username)["user_id"]
-        
+        user_id = self.getUserID(username)["user_id"]
+        return {username : user_id}
         # Check if user_id is found and ensure it's a string
         # if not user_id:
         #     return {"error": "User does not exist"}  # Just in case the user is not found
