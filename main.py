@@ -110,7 +110,7 @@ async def deleteAllMoods(username: str):
         result = db_crud.deleteMood(username=username)
         return {
             "message": f"All moods for {username} have been deleted.",
-            "result": result  # Expected to be something like {"deleted_count": 5}
+            "result": result 
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

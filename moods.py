@@ -120,11 +120,11 @@ class DB_CRUD():
         self.collection = self.db["moods"]
         
         # Get the user_id for the specified username
-        user_id = self.getUserID(username)["user_id"]
-        
-        # Check if user_id is found and ensure it's a string
-        if not user_id:
-            return {"error": "User does not exist"} 
+        user_result = self.getUserID(username)
+        if "error" in user_result:
+            return {"error": user_result["error"]}
+
+        user_id = ObjectId(user_result["user_id"])  # Convert string to ObjectId
         
         # Deleting the mood entries for the specified user_id
         result = self.collection.delete_many({"user_id": user_id})
@@ -133,6 +133,7 @@ class DB_CRUD():
             return {"message": f"Successfully deleted {result.deleted_count} mood entries"}
         else:
             return {"error": "No matching mood entries found to delete"}
+
 
 
     #Grab a list of the specified factor for the whole of a month
