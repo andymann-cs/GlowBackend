@@ -121,19 +121,19 @@ class DB_CRUD():
         
         # Get the user_id for the specified username
         user_id = self.getUserID(username)["user_id"]
-        return {"idk" : bool(user_id=="67e183c3c468744e4b235553")}
+        
         # Check if user_id is found and ensure it's a string
-        # if not user_id:
-        #     return {"error": "User does not exist"}  # Just in case the user is not found
+        if not user_id:
+            return {"error": "User does not exist"}  # Just in case the user is not found
         
-        # # Ensure user_id is a string
-        # user_id = str(user_id)
+        # Ensure user_id is a string
+        user_id = str(user_id)
         
-        # # Debug print statements to check user_id value
-        # print(f"Retrieved user_id: {user_id}")
+        # Debug print statements to check user_id value
+        print(f"Retrieved user_id: {user_id}")
         
         # Deleting the mood entries for the specified user_id
-        result = self.collection.delete_many({"user_id": username})
+        result = self.collection.delete_({"user_id": user_id})
 
         if result.deleted_count > 0:
             return {"message": f"Successfully deleted {result.deleted_count} mood entries"}
@@ -223,8 +223,8 @@ class DB_CRUD():
     #check if log exists for a specific person and day
     def hasLoggedMoodToday(self, username, date):
         self.collection = self.db["moods"]
-        user_id = self.getUserID(username)["user_id"]
-        mood = self.collection.find_one({"user_id": user_id, "date": date})
+        #user_id = self.getUserID(username)["user_id"]
+        mood = self.collection.find_one({"user_id": username, "date": date})
         return {"logged": bool(mood)}
 
 
