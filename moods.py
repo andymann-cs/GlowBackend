@@ -124,7 +124,7 @@ class DB_CRUD():
         if "error" in user_result:
             return {"error": user_result["error"]}
 
-        user_id = user_result["user_id"]  # Convert string to ObjectId
+        user_id = ObjectId(user_result["user_id"])  # Convert string to ObjectId
 
         # Deleting the mood entries for the specified user_id
         result = self.collection.delete_many({"user_id": user_id})
@@ -132,7 +132,7 @@ class DB_CRUD():
         if result.deleted_count > 0:
             return {"message": f"Successfully deleted {result.deleted_count} mood entries"}
         else:
-            return {f"error": "No matching mood entries found to delete for user_id {user_id}"}
+            return {"error": "No matching mood entries found to delete for user_id: " + user_id}
 
 
 
