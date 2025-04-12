@@ -156,13 +156,13 @@ class DB_CRUD():
         else:
             end_date_formatted = datetime.now()
             
-        start_date_formatted = (end_date_formatted - timedelta(days=30)).strftime("%Y-%m-%d")
+        start_date = end_date_formatted - timedelta(days=30)
         
         retrievedDocs = self.collection.find({
             "user_id":userID,
             "date": { 
-                "$gte" : start_date_formatted,
-                "$lt" : end_date_formatted
+                "$gte" : start_date.strftime("%Y-%m-%d"),
+                "$lt" : end_date_formatted.strftime("%Y-%m-%d")
                 }
             }
         )
@@ -173,7 +173,7 @@ class DB_CRUD():
             moodDict[docDate] = docMood
         
         for i in range(30):
-            currentDay = (start_date_formatted + timedelta(days=i)).strftime("%Y-%m-%d")
+            currentDay = (start_date + timedelta(days=i)).strftime("%Y-%m-%d")
         allDocs.append(moodDict.get(currentDay, None))
         return allDocs
 
