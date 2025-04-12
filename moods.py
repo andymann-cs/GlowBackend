@@ -132,7 +132,7 @@ class DB_CRUD():
         if result.deleted_count > 0:
             return {"message": f"Successfully deleted {result.deleted_count} mood entries"}
         else:
-            return {"error": "No matching mood entries found to delete for user_id: " + user_id}
+            return {"error": "No matching mood entries found to delete for user_id: " + user_result["user_id"]}
 
 
 
