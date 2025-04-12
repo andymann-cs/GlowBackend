@@ -123,7 +123,7 @@ class DB_CRUD():
   
         result = self.collection.delete_many({"user_id": user_id})
 
-        username = self.collection.find_many({"user_id": user_id})
+        username = self.collection.find({"user_id": user_id})
         return username
         if result.deleted_count > 0:
             return {"message": f"Successfully deleted {result.deleted_count} mood entries"}
