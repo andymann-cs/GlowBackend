@@ -123,6 +123,9 @@ class DB_CRUD():
         if not user_id:
             return {"error": "User does not exist"}  # Just in case the user is not found
 
+        user = self.collection.find_one({"user_id": user_id})
+        return user
+        
         # Debug print statements to check user_id value
         print(f"Retrieved user_id: {user_id}")
         
