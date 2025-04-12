@@ -133,60 +133,6 @@ class DB_CRUD():
         else:
             return {"error": "No matching mood entries found to delete for user_id: " + user_result["user_id"]}
 
-
-
-    #Grab a list of the specified factor for the whole of a month
-    def getLastThirtyDayFactor(self, username, factor, end_day=None):
-        if not self.checkValidFactor(factor):
-            return None
-        
-        userID = self.getUserID(username)["user_id"]
-        if not userID:
-            return {"error": "User does not exist"}
-
-        self.collection = self.db["moods"]
-        moodDict = {}
-        allDocs = []
-
-        if end_day is not None:
-            try: 
-                end_date_formatted = datetime.strptime(end_day, "%Y-%m-%d")
-            except ValueError:
-                return {"error": "Invalid end day format. Use YYYY-MM-DD"}
-        else:
-            end_date_formatted = datetime.now()
-            
-        start_date = end_date_formatted - timedelta(days=30)
-        
-        retrievedDocs = self.collection.find({
-            "user_id":userID,
-            "date": { 
-                "$gte" : start_date.strftime("%Y-%m-%d"),
-                "$lt" : end_date_formatted.strftime("%Y-%m-%d")
-                }
-            }
-        )
-
-        for doc in retrievedDocs:
-            docDate = doc.get("date")
-            docMood = doc.get(factor)
-            moodDict[docDate] = docMood
-        
-        for i in range(30):
-            currentDay = (start_date + timedelta(days=i)).strftime("%Y-%m-%d")
-            allDocs.append(moodDict.get(currentDay, None))
-        return allDocs
-
-    #converts a list of strings to a dictionary of form {"factor": "count"}
-    def convertMoodListToChartDict(self, listOfMoods):
-        moodData = {}
-        for docMood in listOfMoods:
-            if docMood in moodData:
-                moodData[docMood] += 1
-            else:
-                moodData[docMood] = 1
-        return moodData
-
     #delete user from accounts 
     def deleteUserRecords(self, username):
         self.collection = self.db["accounts"] 
@@ -221,6 +167,64 @@ class DB_CRUD():
         self.collection = self.db["moods"]
         mood = self.collection.find_one({"user_id": user_id, "date": date})
         return {"logged": bool(mood)}
+
+
+
+    #Grab a list of the specified factor for the whole of a month
+    def getFactorForXDays(self, username, factor, days=30, end_day=None):
+        if not self.checkValidFactor(factor):
+            return None
+        
+        userID = self.getUserID(username)["user_id"]
+        if not userID:
+            return {"error": "User does not exist"}
+
+        self.collection = self.db["moods"]
+        moodDict = {}
+        allDocs = []
+
+        if end_day is not None:
+            try: 
+                end_date_formatted = datetime.strptime(end_day, "%Y-%m-%d")
+            except ValueError:
+                return {"error": "Invalid end day format. Use YYYY-MM-DD"}
+        else:
+            end_date_formatted = datetime.now()
+            
+        start_date = end_date_formatted - timedelta(days=days)
+        
+        retrievedDocs = self.collection.find({
+            "user_id":userID,
+            "date": { 
+                "$gte" : start_date.strftime("%Y-%m-%d"),
+                "$lt" : end_date_formatted.strftime("%Y-%m-%d")
+                }
+            }
+        )
+
+        for doc in retrievedDocs:
+            docDate = doc.get("date")
+            docMood = doc.get(factor)
+            moodDict[docDate] = docMood
+        
+        for i in range(30):
+            currentDay = (start_date + timedelta(days=i)).strftime("%Y-%m-%d")
+            allDocs.append(moodDict.get(currentDay, None))
+        return allDocs
+
+    #converts a list of strings to a dictionary of form {"factor": "count"}
+    def convertMoodListToChartDict(self, listOfMoods):
+        moodData = {}
+        for docMood in listOfMoods:
+            if docMood in moodData:
+                moodData[docMood] += 1
+            else:
+                moodData[docMood] = 1
+        return moodData
+
+    def mostPopularFactor30Days (self, username, end_date=None):
+
+
 
 
 

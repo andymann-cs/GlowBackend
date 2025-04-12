@@ -76,10 +76,11 @@ async def addCustomActivity(username: str, activity: str):
     return result
     
 #Calls getMonthlyFactorList from moods.py taking all parameters from the path
-@app.get("/moods/lastThirtyDays/{username}/{factor}")
-async def getLastThirtyDaysFactorList(username: str, factor: str, end_day: Optional[str] = Query(default=None, description="Format: YYYY-MM-DD - Default is today")):
+@app.get("/moods/lastXDays/{username}/{factor}/{days}")
+async def getFactorForLastXDays(username: str, factor: str, days: int, end_day: Optional[str] = Query(default=None, description="Format: YYYY-MM-DD - Default is today")):
     if not db_crud.checkValidFactor(factor):
        raise HTTPException(status_code=400, detail="Invalid factor")
+    
     if end_day is not None:
         try:
             datetime.strptime(end_day, "%Y-%m-%d")
@@ -87,7 +88,7 @@ async def getLastThirtyDaysFactorList(username: str, factor: str, end_day: Optio
             raise HTTPException(status_code=400, detail="Invalid date format. Use YYYY-MM-DD.")
         
         try:
-            return db_crud.getLastThirtyDayFactor(username, factor, end_day)
+            return db_crud.getFactorForXDays(username, factor, days, end_day)
         except Exception as e:
             raise HTTPException(status_code=500, detail=str(e))
         
