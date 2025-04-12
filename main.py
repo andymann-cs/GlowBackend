@@ -26,7 +26,7 @@ class MoodData(BaseModel):
 #mongo_uri = os.getenv("MONGO_URI")
 
 #Load and establish connection to mongo
-client = MongoClient("mongodb+srv://sam_user:9ireiEodVKBb3Owt@glowcluster.36bwm.mongodb.net/?retryWrites=true&w=majority&appName=GlowCluster")
+client = MongoClient("mongodb+srv://admin_user:mIVCpzBmhrZmyUkT@glowcluster.36bwm.mongodb.net/?retryWrites=true&w=majority&appName=GlowCluster")
 db = client["mood_tracker"]
 app = FastAPI()
 db_crud = DB_CRUD(db)

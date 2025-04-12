@@ -9,7 +9,7 @@ class genFakeData:
         self.users = ["67e183c3c468744e4b235553"]
         self.moods = ["Happy", "Sad", "Stressed", "Tired", "Content", "Excited", "Angry", "Proud", "Unsure", "Sick"]
         self.start = datetime(2025,1,1)
-        self.end = datetime.now()
+        self.end = datetime(2025,12,31)
 
     def genData(self):
         data = []

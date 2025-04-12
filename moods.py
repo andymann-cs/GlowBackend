@@ -118,7 +118,10 @@ class DB_CRUD():
     def deleteMood(self, username):
         self.collection = self.db["moods"]
         user_id = self.getUserID(username)["user_id"]
+        print(f"Retrieved user_id: {user_id}")
+        print(f"Deleting moods with query: {{'user_id': {user_id}}}")
         self.collection.delete_many({"user_id": user_id})
+        return {"message": "Deleted "}
 
     #Grab a list of the specified factor for the whole of a month
     def getMonthlyFactorList(self, username, month, year, factor):
