@@ -107,7 +107,7 @@ async def updateMood(username: str, date: str, data: MoodData):
 @app.delete("/moods/{username}/delete")
 async def deleteAllMoods(username: str):
     try:
-        return db_crud.deleteMood(username=username)
+        return db_crud.deleteMood(username)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))    
     
