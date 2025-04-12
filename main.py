@@ -2,12 +2,13 @@
 ## When the methods are called they communicate with AWS and FastAPI to get the data from the database
 ## The data is then returned to the Frontend to be displayed
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Query
 from pymongo import MongoClient
 from moods import DB_CRUD
 from dotenv import load_dotenv
 from pydantic import BaseModel
 from typing import Optional
+from datetime import datetime
 import os
 
 
@@ -75,15 +76,22 @@ async def addCustomActivity(username: str, activity: str):
     return result
     
 #Calls getMonthlyFactorList from moods.py taking all parameters from the path
-@app.get("/moods/monthly/{username}/{month}/{year}/{factor}")
-async def getMonthlyFactorList(username: str, month: int, year: int, factor: str):
+@app.get("/moods/lastThirtyDays/{username}/{factor}")
+async def getLastThirtyDaysFactorList(username: str, factor: str, end_day: Optional[str] = Query(default=None, description="Format: YYYY-MM-DD - Default is today")):
     if not db_crud.checkValidFactor(factor):
        raise HTTPException(status_code=400, detail="Invalid factor")
-    try:
-        return db_crud.getMonthlyFactorList(username, month, year, factor)
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-    
+    if end_day is not None:
+        try:
+            datetime.strptime(end_day, "%Y-%m-%d")
+        except ValueError:
+            raise HTTPException(status_code=400, detail="Invalid date format. Use YYYY-MM-DD.")
+        
+        try:
+            return db_crud.getLastThirtyDayFactors(username, factor, end_day)
+        except Exception as e:
+            raise HTTPException(status_code=500, detail=str(e))
+        
+        
 #Calls updateMood from moods.py taking username from the path, and mood entry from body provided
 @app.put("/moods/{username}/update")
 async def updateMood(username: str, date: str, data: MoodData):

@@ -1,7 +1,7 @@
 from genFakeData import genFakeData
 from pymongo import MongoClient 
 from bson import ObjectId
-import datetime
+from datetime import datetime, timedelta
 import random
 
 class DB_CRUD():
@@ -136,7 +136,7 @@ class DB_CRUD():
 
 
     #Grab a list of the specified factor for the whole of a month
-    def getMonthlyFactorList(self, username, month, year, factor):
+    def getLastThirtyDayFactor(self, username, factor, end_day=None):
         if not self.checkValidFactor(factor):
             return None
         
@@ -147,18 +147,22 @@ class DB_CRUD():
         self.collection = self.db["moods"]
         moodDict = {}
         allDocs = []
-        start = f"{year}-{month:02d}-01"
 
-        if month == 12:
-            end = f"{year+1}-01-01"
+        if end_day is not None:
+            try: 
+                end_date_formatted = datetime.strptime(end_day, "%Y-%m-%d")
+            except ValueError:
+                return {"error": "Invalid end day format. Use YYYY-MM-DD"}
         else:
-            end = f"{year}-{month+1:02d}-01"
+            end_date_formatted = datetime.now()
+            
+        start_date_formatted = (end_date_formatted - timedelta(days=30)).strftime("%Y-%m-%d")
         
         retrievedDocs = self.collection.find({
             "user_id":userID,
             "date": { 
-                "$gte" : start,
-                "$lt" : end
+                "$gte" : start_date_formatted,
+                "$lt" : end_date_formatted
                 }
             }
         )
@@ -168,15 +172,11 @@ class DB_CRUD():
             docMood = doc.get(factor)
             moodDict[docDate] = docMood
         
-        for day in range(1, 31+1):
-            currentDay = f"{year}-{month:02d}-{day:02d}"
-
-            if currentDay in moodDict:
-                allDocs.append(moodDict[currentDay])
-            else:
-                allDocs.append(None)
+        for i in range(30):
+            currentDay = (start_date_formatted + timedelta(days=i)).strftime("%Y-%m-%d")
+        allDocs.append(moodDict.get(currentDay, None))
         return allDocs
-    
+
     #converts a list of strings to a dictionary of form {"factor": "count"}
     def convertMoodListToChartDict(self, listOfMoods):
         moodData = {}
@@ -216,9 +216,10 @@ class DB_CRUD():
 
     #check if log exists for a specific person and day
     def hasLoggedMoodToday(self, username, date):
+        user_id = self.getUserID(username)["user_id"]
+
         self.collection = self.db["moods"]
-        #user_id = self.getUserID(username)["user_id"]
-        mood = self.collection.find_one({"user_id": username, "date": date})
+        mood = self.collection.find_one({"user_id": user_id, "date": date})
         return {"logged": bool(mood)}
 
 
