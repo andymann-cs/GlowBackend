@@ -133,7 +133,7 @@ class DB_CRUD():
         print(f"Retrieved user_id: {user_id}")
         
         # Deleting the mood entries for the specified user_id
-        result = self.collection.delete_many({"user_id": user_id})
+        result = self.collection.delete_many({"user_id": username})
 
         if result.deleted_count > 0:
             return {"message": f"Successfully deleted {result.deleted_count} mood entries"}
