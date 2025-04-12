@@ -125,7 +125,8 @@ class DB_CRUD():
             return {"error": user_result["error"]}
 
         user_id = ObjectId(user_result["user_id"])  # Convert string to ObjectId
-        
+        print("username: ", username)
+        print("user_id", user_id)
         # Deleting the mood entries for the specified user_id
         result = self.collection.delete_many({"user_id": user_id})
 
