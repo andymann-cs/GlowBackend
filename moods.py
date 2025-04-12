@@ -117,16 +117,15 @@ class DB_CRUD():
 
 
     def deleteMood(self, username):
-        self.collection = self.db["moods"]
-        
         # Get the user_id for the specified username
         user_result = self.getUserID(username)
         if "error" in user_result:
             return {"error": user_result["error"]}
+        
+        self.collection = self.db["moods"]
+        user_id = user_result["user_id"] # Isn't stored as ObjectId for this table
 
-        user_id = user_result["user_id"]  # Convert string to ObjectId
-
-        # Deleting the mood entries for the specified user_id
+        # Deleting all mood entries for the specified user_id
         result = self.collection.delete_many({"user_id": user_id})
 
         if result.deleted_count > 0:
