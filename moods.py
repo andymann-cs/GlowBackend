@@ -211,7 +211,7 @@ class DB_CRUD():
     def addCustomActivity(self, username, activityName):
         self.collection = self.db["accounts"]
         result = self.collection.update_one(
-            {"username": username}, {"addToSet": {"exercises": activityName}}
+            {"username": username}, {"$addToSet": {"exercises": activityName}}
         )
         if result.matched_count == 0:
             return {"error": "User not found"}
