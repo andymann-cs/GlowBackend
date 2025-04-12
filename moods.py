@@ -114,35 +114,27 @@ class DB_CRUD():
             return {"error": "No matching mood entry found to update"}
         return {"message": "Mood updated successfully"}
 
-    #delete every mood entry from the moods collection
+
+
     def deleteMood(self, username):
         self.collection = self.db["moods"]
         
         # Get the user_id for the specified username
         user_id = self.getUserID(username)["user_id"]
+        
+        # Check if user_id is found and ensure it's a string
         if not user_id:
             return {"error": "User does not exist"}  # Just in case the user is not found
-
-        user = self.collection.find_one({"user_id": user_id})
-        return user
+        
+        # Ensure user_id is a string
+        user_id = str(user_id)
         
         # Debug print statements to check user_id value
         print(f"Retrieved user_id: {user_id}")
         
         # Deleting the mood entries for the specified user_id
         result = self.collection.delete_many({"user_id": user_id})
-        
-        # Check how many documents were deleted
-        print(f"Deleted {result.deleted_count} entries")
 
-        # Query again to check if any documents with this user_id still exist
-        docs = self.collection.find({"user_id": user_id})
-        
-        # Use count_documents instead of count for cursor objects
-        remaining_docs = self.collection.count_documents({"user_id": user_id})
-        print(f"Documents left after deletion: {remaining_docs}")
-
-        # Return the appropriate message based on the deletion result
         if result.deleted_count > 0:
             return {"message": f"Successfully deleted {result.deleted_count} mood entries"}
         else:
