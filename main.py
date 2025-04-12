@@ -107,10 +107,14 @@ async def updateMood(username: str, date: str, data: MoodData):
 @app.delete("/moods/{username}/deleteAll")
 async def deleteAllMoods(username: str):
     try:
-        result = db_crud.deleteAllMoods(username)
-        return {"message": f"All moods for {username} have been deleted.", "result": result}
+        result = db_crud.deleteMood(username=username)
+        return {
+            "message": f"All moods for {username} have been deleted.",
+            "result": result  # Expected to be something like {"deleted_count": 5}
+        }
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))   
+        raise HTTPException(status_code=500, detail=str(e))
+   
     
 
 #Calls deleteUserRecords from moods.py taking the username from the parameter
