@@ -121,7 +121,7 @@ class DB_CRUD():
         
         # Get the user_id for the specified username
         user_id = self.getUserID(username)["user_id"]
-        return {username : user_id}
+        return {"idk" : bool(user_id=="67e183c3c468744e4b235553")}
         # Check if user_id is found and ensure it's a string
         # if not user_id:
         #     return {"error": "User does not exist"}  # Just in case the user is not found
