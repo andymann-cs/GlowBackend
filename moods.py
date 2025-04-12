@@ -124,13 +124,7 @@ class DB_CRUD():
         
         # Check if user_id is found and ensure it's a string
         if not user_id:
-            return {"error": "User does not exist"}  # Just in case the user is not found
-        
-        # Ensure user_id is a string
-        user_id = str(user_id)
-        
-        # Debug print statements to check user_id value
-        print(f"Retrieved user_id: {user_id}")
+            return {"error": "User does not exist"} 
         
         # Deleting the mood entries for the specified user_id
         result = self.collection.delete_many({"user_id": user_id})
