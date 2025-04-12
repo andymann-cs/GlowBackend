@@ -117,14 +117,27 @@ class DB_CRUD():
     #delete every mood entry from the moods collection
     def deleteMood(self, username):
         self.collection = self.db["moods"]
-        user_id = self.getUserID(username)["user_id"]
-        print(f"Retrieved user_id: {user_id}")
-        print(f"Deleting moods with query: {{'user_id': {user_id}}}")
-  
-        result = self.collection.delete_many({"user_id": user_id})
 
-        username = self.collection.find({"user_id": user_id})
-        return username
+        user_id = self.getUserID(username)["user_id"]
+        if not user_id:
+            return {"error": "User does not exist"}  
+
+        print(f"Retrieved user_id: {user_id}")
+        
+        # Deleting the mood entries for the specified user_id
+        result = self.collection.delete_many({"user_id": user_id})
+        
+        # Check how many documents were deleted
+        print(f"Deleted {result.deleted_count} entries")
+
+        # Query again to check if any documents with this user_id still exist
+        docs = self.collection.find({"user_id": user_id})
+        if docs.count() == 0:  # Check if no documents are left
+            print("No documents found after deletion")
+        else:
+            print(f"Documents still exist: {docs.count()}")
+
+        # Return the appropriate message based on the deletion result
         if result.deleted_count > 0:
             return {"message": f"Successfully deleted {result.deleted_count} mood entries"}
         else:
