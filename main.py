@@ -87,11 +87,11 @@ async def getLastThirtyDaysFactorList(username: str, factor: str, end_day: Optio
             raise HTTPException(status_code=400, detail="Invalid date format. Use YYYY-MM-DD.")
         
         try:
-            return db_crud.getLastThirtyDayFactors(username, factor, end_day)
+            return db_crud.getLastThirtyDayFactor(username, factor, end_day)
         except Exception as e:
             raise HTTPException(status_code=500, detail=str(e))
         
-        
+
 #Calls updateMood from moods.py taking username from the path, and mood entry from body provided
 @app.put("/moods/{username}/update")
 async def updateMood(username: str, date: str, data: MoodData):
