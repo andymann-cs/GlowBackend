@@ -22,22 +22,21 @@ class MoodData(BaseModel):
 
 
 
-load_dotenv()
-mongo_uri = os.getenv("MONGO_URI")
-print(f"MONGO_URI is: {mongo_uri}")
+#load_dotenv()
+#mongo_uri = os.getenv("MONGO_URI")
 
-
+#Load and establish connection to mongo
 client = MongoClient("mongodb+srv://sam_user:9ireiEodVKBb3Owt@glowcluster.36bwm.mongodb.net/?retryWrites=true&w=majority&appName=GlowCluster")
 db = client["mood_tracker"]
 app = FastAPI()
 db_crud = DB_CRUD(db)
 
-
+#just a root function - test if fastAPI is responding
 @app.get("/")
 def read_root():
     return {"message": "Hello, world!"}
 
-
+#Calls getUserID from moods.py
 @app.get("/moods/userID/getUserID/{username}")
 async def getUserID(username: str):
     try:
@@ -45,6 +44,7 @@ async def getUserID(username: str):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
     
+#Calls getUsername from moods.py
 @app.get("/moods/username/getUsername/{user_id}")
 async def getUsername(user_id: str):
     try:
@@ -52,11 +52,13 @@ async def getUsername(user_id: str):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))    
 
+#Calls insertMood from moods.py, takes a body of the form of MoodData
 @app.post("/moods/{username}/insert")
 async def insertMood(username: str, data: MoodData):
     db_crud.insertMood(username=username, **data)
     return {"message": "Mood inserted successfully"}
 
+#Calls getRandomActivity from moods.py
 @app.get("/accounts/{username}/getRandomActivity")
 async def getRandomActivity(username: str):
     try:
@@ -64,6 +66,7 @@ async def getRandomActivity(username: str):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+#Calls addCustomActivity from moods.py, taking the username from the path, and body supplied
 @app.post("/accounts/{username}/addActivity")
 async def addCustomActivity(username: str, activity: str):
     result = db_crud.addCustomActivity(username, activity)
@@ -71,7 +74,7 @@ async def addCustomActivity(username: str, activity: str):
         raise HTTPException(status_code=404, detail=result["error"])
     return result
     
-
+#Calls getMonthlyFactorList from moods.py taking all parameters from the path
 @app.get("/moods/monthly/{username}/{month}/{year}/{factor}")
 async def getMonthlyFactorList(username: str, month: int, year: int, factor: str):
     if not db_crud.checkValidFactor(factor):
@@ -81,7 +84,7 @@ async def getMonthlyFactorList(username: str, month: int, year: int, factor: str
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
     
-
+#Calls updateMood from moods.py taking username from the path, and mood entry from body provided
 @app.put("/moods/{username}/update")
 async def updateMood(username: str, date: str, data: MoodData):
     try:
@@ -100,6 +103,7 @@ async def updateMood(username: str, date: str, data: MoodData):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))    
 
+#Calls deleteAllMoods from moods.py taking the username from the parameter
 @app.delete("/moods/{username}/delete")
 async def deleteAllMoods(username: str):
     try:
@@ -108,6 +112,8 @@ async def deleteAllMoods(username: str):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))    
     
+
+#Calls deleteUserRecords from moods.py taking the username from the parameter
 @app.delete("/accounts/{username}/delete")
 async def deleteUser(username: str):
     try:
@@ -116,6 +122,7 @@ async def deleteUser(username: str):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))    
     
+#Calls hasLoggedMoodToday from moods.py taking the username and data as parameters from the path
 @app.get("/moods/{username}/hasLoggedIn/{date}")
 async def hasLoggedIn(username: str, date: str):
     try:

@@ -19,19 +19,19 @@ class DB_CRUD():
 
 
     #Consider Validation and error handling
-
     def checkValidFactor(self, testFactor):
         if testFactor in self.factors:
             return True
         else:
             return False
-        
+      
     def checkValidMood(self, mood):
         if mood in self.moodList:
             return True
         else:
             return False
 
+    #takes a username, returns corresponding user_id
     def getUserID(self, username):
         self.collection = self.db["accounts"]
         try:
@@ -43,6 +43,7 @@ class DB_CRUD():
         except Exception as e:
             return{"error" : str(e)}
 
+    #takes a user_id, returns corresponding username
     def getUsername(self, userID):
         self.collection = self.db["accounts"]
         try:
@@ -89,7 +90,7 @@ class DB_CRUD():
     #     moods = self.collection.find({"user": username, "date": {"$gte": cutoffTime}})
     #     return list(moods)
 
-
+    #update an exsiting entry (NEEDS TESTING)
     def updateMood(self, username, mood, alcohol, exercise, screen, sleep, date):
         self.collection = self.db["moods"]
 
@@ -113,12 +114,13 @@ class DB_CRUD():
             return {"error": "No matching mood entry found to update"}
         return {"message": "Mood updated successfully"}
 
-
+    #delete every mood entry from the moods collection
     def deleteMood(self, username):
         self.collection = self.db["moods"]
         user_id = self.getUserID(username)["user_id"]
         self.collection.delete_many({"user_id": user_id})
 
+    #Grab a list of the specified factor for the whole of a month
     def getMonthlyFactorList(self, username, month, year, factor):
         if not self.checkValidFactor(factor):
             return None
@@ -151,7 +153,6 @@ class DB_CRUD():
             docMood = doc.get(factor)
             moodDict[docDate] = docMood
         
-
         for day in range(1, 31+1):
             currentDay = f"{year}-{month:02d}-{day:02d}"
 
@@ -160,7 +161,8 @@ class DB_CRUD():
             else:
                 allDocs.append(None)
         return allDocs
-        
+    
+    #converts a list of strings to a dictionary of form {"factor": "count"}
     def convertMoodListToChartDict(self, listOfMoods):
         moodData = {}
         for docMood in listOfMoods:
@@ -170,10 +172,12 @@ class DB_CRUD():
                 moodData[docMood] = 1
         return moodData
 
+    #delete user from accounts 
     def deleteUserRecords(self, username):
         self.collection = self.db["accounts"] 
         self.collection.delete_many({"username": username})
 
+    #returns a random activity from the accounts section
     def getRandomActivity(self, username):
         self.collection = self.db["accounts"]
         doc = self.collection.find_one({"username" : username})
@@ -182,6 +186,7 @@ class DB_CRUD():
 
         return exerciseList[activity]
 
+    #add a custom activity to an account
     def addCustomActivity(self, username, activityName):
         self.collection = self.db["accounts"]
         result = self.collection.update_one(
@@ -194,6 +199,7 @@ class DB_CRUD():
         else:
             return {"message": "Activity added successfully"}
 
+    #check if log exists for a specific person and day
     def hasLoggedMoodToday(self, username, date):
         self.collection = self.db["moods"]
         user_id = self.getUserID(username)["user_id"]
