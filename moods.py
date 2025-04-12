@@ -174,7 +174,7 @@ class DB_CRUD():
         
         for i in range(30):
             currentDay = (start_date + timedelta(days=i)).strftime("%Y-%m-%d")
-        allDocs.append(moodDict.get(currentDay, None))
+            allDocs.append(moodDict.get(currentDay, None))
         return allDocs
 
     #converts a list of strings to a dictionary of form {"factor": "count"}
