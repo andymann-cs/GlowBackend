@@ -60,12 +60,12 @@ class DB_CRUD():
     def insertMood(self, username, mood, sleep, screen, exercise, alcohol, date, diary):
 
         self.collection = self.db["moods"]
-        userID = self.getUserID(username)["user_id"]
-        if not userID:
+        user_id = self.getUserID(username)["user_id"]
+        if not user_id:
             return {"error" : "User Does Not Exist"}
         
         mood_entry = {
-                "userID": userID,
+                "userID": user_id,
                 "mood": mood,
                 "alcohol": alcohol,
                 "exercise": exercise,
@@ -223,8 +223,8 @@ class DB_CRUD():
     #check if log exists for a specific person and day
     def hasLoggedMoodToday(self, username, date):
         self.collection = self.db["moods"]
-        #user_id = self.getUserID(username)["user_id"]
-        mood = self.collection.find_one({"user_id": username, "date": date})
+        user_id = self.getUserID(username)["user_id"]
+        mood = self.collection.find_one({"user_id": user_id, "date": date})
         return {"logged": bool(mood)}
 
 
