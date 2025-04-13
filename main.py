@@ -6,7 +6,7 @@ from fastapi import FastAPI, HTTPException, Query
 from pymongo import MongoClient
 from dotenv import load_dotenv
 from pydantic import BaseModel
-from typing import Optional
+from typing import Optional, Union
 from datetime import datetime
 
 from moods import DB_CRUD
@@ -23,6 +23,10 @@ class MoodData(BaseModel):
     alcohol: float
     date: str
     diary: Optional[str] = None
+
+class MoodUpdate(BaseModel):
+    factor: str
+    value: Union[str, int, float]
 
 #Load and establish connection to mongo
 client = MongoClient("mongodb+srv://second_admin:hL9l8r6liQROX0Up@glowcluster.36bwm.mongodb.net/?retryWrites=true&w=majority&appName=GlowCluster")
@@ -72,35 +76,14 @@ async def addCustomActivity(username: str, activity: str):
     if "error" in result:
         raise HTTPException(status_code=404, detail=result["error"])
     return result
-    
-#Calls getMonthlyFactorList from moods.py taking all parameters from the path
-@app.get("/moods/lastXDays/{username}/{factor}/{days}")
-async def getFactorForLastXDays(username: str, factor: str, days: int, end_day: Optional[str] = Query(default=None, description="Format: YYYY-MM-DD - Default is today")):
-    if not db_crud.checkValidFactor(factor):
-       raise HTTPException(status_code=400, detail="Invalid factor")
-    
-    if end_day is not None:
-        try:
-            datetime.strptime(end_day, "%Y-%m-%d")
-        except ValueError:
-            raise HTTPException(status_code=400, detail="Invalid date format. Use YYYY-MM-DD.")
-        
-        try:
-            return db_crud.getFactorForXDays(username, factor, days, end_day)
-        except Exception as e:
-            raise HTTPException(status_code=500, detail=str(e))
-        
 
 #Calls updateMood from moods.py taking username from the path, and mood entry from body provided
 @app.put("/moods/{username}/update")
-async def updateMood(username: str, date: str, data: MoodData):
+async def updateMood(username: str, date: str, update: MoodUpdate):
     try:
         result = db_crud.updateMood(username=username,
-                                    mood=data.mood,
-                                    alcohol=data.alcohol,
-                                    exercise=data.exercise,
-                                    screen=data.screen,
-                                    sleep=data.sleep,
+                                    factor=update.factor,
+                                    value=update.value,
                                     date=date
                                 )
         
@@ -143,3 +126,54 @@ async def hasLoggedIn(username: str, date: str):
 def nhs_search(keywords: str):
     search_urls = get_nhs_search_urls(keywords)
     return {"search_urls": search_urls}
+
+#Calls getMonthlyFactorList from moods.py taking all parameters from the path
+@app.get("/moods/lastXDays/{username}/{factor}/{days}")
+async def getFactorForLastXDays(username: str, factor: str, days: int, end_day: Optional[str] = Query(default=None, description="Format: YYYY-MM-DD - Default is today")):
+    if not db_crud.checkValidFactor(factor):
+       raise HTTPException(status_code=400, detail="Invalid factor")
+    
+    if end_day is not None:
+        try:
+            datetime.strptime(end_day, "%Y-%m-%d")
+        except ValueError:
+            raise HTTPException(status_code=400, detail="Invalid date format. Use YYYY-MM-DD.")
+    
+    try:
+        return db_crud.getFactorForXDays(username, factor, days, end_day)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    
+
+@app.get("/moods/average/{username}/{factor}/{days}")
+async def getAverageFactorForLastXDays(username: str, factor: str, days: int, end_day: Optional[str] = Query(default=None, description="Format: YYYY-MM-DD - Default is today")):
+    if not db_crud.checkValidFactor(factor) or factor == "mood":
+       raise HTTPException(status_code=400, detail="Invalid factor")
+    
+    if end_day is not None:
+        try:
+            datetime.strptime(end_day, "%Y-%m-%d")
+        except ValueError:
+            raise HTTPException(status_code=400, detail="Invalid date format. Use YYYY-MM-DD.")
+        
+    try:
+        result = db_crud.getAverageFactorForXDays(username, factor, days, end_day)
+        return {"average": result}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/moods/mostPopularMood/{username}/{days}")
+async def getFactorForLastXDays(username: str, days: int, end_day: Optional[str] = Query(default=None, description="Format: YYYY-MM-DD - Default is today")):
+    if end_day is not None:
+        try:
+            datetime.strptime(end_day, "%Y-%m-%d")
+        except ValueError:
+            raise HTTPException(status_code=400, detail="Invalid date format. Use YYYY-MM-DD.")
+        
+    try:
+        result = db_crud.getMostPopularMoodForXDays(username, days, end_day)
+        if not result:
+            return {"message": "No mood data available in this time period"}
+        return {"Top mood": result[0][0], "count": result[0][1]}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))

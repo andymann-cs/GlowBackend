@@ -2,6 +2,8 @@ from genFakeData import genFakeData
 from pymongo import MongoClient 
 from bson import ObjectId
 from datetime import datetime, timedelta
+from collections import Counter
+from statistics import mean
 import random
 
 class DB_CRUD():
@@ -80,31 +82,28 @@ class DB_CRUD():
         return{"message" : "mood entry added"}
 
     #update an exsiting entry (NEEDS TESTING)
-    def updateMood(self, username, mood, alcohol, exercise, screen, sleep, date):
-        self.collection = self.db["moods"]
+    def updateMood(self, username, factor, value, date):
 
         user_id = self.getUserID(username)
         if not user_id:
             return {"error": "User does not exist"}
 
+        if not self.checkValidFactor(factor):
+            return{"error": "Invalid factor to update"}
+
+        if factor == "mood":
+            if not self.checkValidMood(value):
+                return{"error": "Invalid mood to update"}
+
         user_id = user_id["user_id"]
         requirement = {"user_id": user_id, "date": date}
 
-        changes = {
-            "$set": {
-                    "mood":mood,
-                    "sleep" : sleep,
-                    "screen" : screen,
-                    "exercise" : exercise,
-                    "alcohol" : alcohol
-                    }
-                }
+        changes = {"$set": {factor: value}}
+        self.collection = self.db["moods"]
         result = self.collection.update_one(requirement, changes)
         if result.matched_count == 0:
             return {"error": "No matching mood entry found to update"}
         return {"message": "Mood updated successfully"}
-
-
 
     def deleteMood(self, username):
         # Get the user_id for the specified username
@@ -220,10 +219,20 @@ class DB_CRUD():
                 moodData[docMood] = 1
         return moodData
 
-    #def mostPopularFactor30Days (self, username, end_date=None):
+    def getAverageFactorForXDays (self, username, factor, days=30, end_day=None):
+        docResult = self.getFactorForXDays(username, factor, days, end_day)
 
+        if factor == "mood" or not self.checkValidFactor(factor):
+            return {"error": "invalid factor"}
+        else:
+            filteredDocResult = [v for v in docResult if v is not None]
+        return mean(filteredDocResult)
 
-
+    def getMostPopularMoodForXDays(self, username, days=30, end_day=None):
+        docResult = self.getFactorForXDays(username, "mood", days, end_day)
+        filteredDocResult = [v for v in docResult if v is not None]
+        countedList = Counter(filteredDocResult)
+        return countedList.most_common(1)   
 
 
 
