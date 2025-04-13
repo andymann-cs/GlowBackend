@@ -58,6 +58,7 @@ async def getUsername(user_id: str):
 #Calls insertMood from moods.py, takes a body of the form of MoodData
 @app.post("/moods/{username}/insert")
 async def insertMood(username: str, data: MoodData):
+    return {"dsddfds"}
     result = db_crud.insertMood(username=username, **data)
     return result
 
