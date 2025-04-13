@@ -68,13 +68,13 @@ class DB_CRUD():
         user_id = user["user_id"]
         mood_entry = {
                 "user_id": user_id,
-                "mood": mood,
-                "alcohol": alcohol,
-                "exercise": exercise,
-                "screen": screen,
-                "sleep": sleep,                
+                # "mood": mood,
+                # "alcohol": alcohol,
+                # "exercise": exercise,
+                # "screen": screen,
+                # "sleep": sleep,                
                 "date": date,
-                "diary": diary
+                #"diary": diary
         }
 
         self.collection = self.db["moods"]
