@@ -61,10 +61,11 @@ class DB_CRUD():
     #date as unique?? or id
     def insertMood(self, username, mood, sleep, screen, exercise, alcohol, date, diary):
 
-        user_id = self.getUserID(username)["user_id"]
-        if not user_id:
+        user = self.getUserID(username)
+        if not user:
             return {"error" : "User Does Not Exist"}
         
+        user_id = user["user_id"]
         mood_entry = {
                 "user_id": user_id,
                 "mood": mood,
