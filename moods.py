@@ -59,7 +59,6 @@ class DB_CRUD():
     #date as unique?? or id
     def insertMood(self, username, mood, sleep, screen, exercise, alcohol, date, diary):
 
-        self.collection = self.db["moods"]
         user_id = self.getUserID(username)["user_id"]
         if not user_id:
             return {"error" : "User Does Not Exist"}
@@ -74,21 +73,11 @@ class DB_CRUD():
                 "date": date,
                 "diary": diary
         }
+
+        self.collection = self.db["moods"]
         self.collection.insert_one(mood_entry)
         
-        return{"attempt" : "successful"}
-
-    # def getMoods(self, username):
-    #     self.collection = self.db["moods"]
-    #     mood = self.collection.find({"user_id" : self.getUserID(username)})
-    #     return mood
-
-    #Need to change the time
-    # def getLastWeekMoods(self, username):
-    #     self.collection = self.db["moods"]
-    #     cutoffTime = int(time.time()) - (60*60*24*7)
-    #     moods = self.collection.find({"user": username, "date": {"$gte": cutoffTime}})
-    #     return list(moods)
+        return{"message" : "mood entry added"}
 
     #update an exsiting entry (NEEDS TESTING)
     def updateMood(self, username, mood, alcohol, exercise, screen, sleep, date):
@@ -150,12 +139,20 @@ class DB_CRUD():
     #add a custom activity to an account
     def addCustomActivity(self, username, activityName):
         self.collection = self.db["accounts"]
+        
+        user = self.collection.find_one({"username": username})
+        if not user:
+            return {"error": "User not found"}
+        
+        if "exercises" not in user:
+            self.collection.update_one(
+                {"username": username}, {"$set": {"exercises": []}}
+        )
+
         result = self.collection.update_one(
             {"username": username}, {"$addToSet": {"exercises": activityName}}
         )
-        if result.matched_count == 0:
-            return {"error": "User not found"}
-        elif result.modified_count == 0:
+        if result.modified_count == 0:
             return {"message": "Activity already exists"}
         else:
             return {"message": "Activity added successfully"}
@@ -207,7 +204,7 @@ class DB_CRUD():
             docMood = doc.get(factor)
             moodDict[docDate] = docMood
         
-        for i in range(30):
+        for i in range(days):
             currentDay = (start_date + timedelta(days=i)).strftime("%Y-%m-%d")
             allDocs.append(moodDict.get(currentDay, None))
         return allDocs

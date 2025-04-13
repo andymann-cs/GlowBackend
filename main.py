@@ -19,15 +19,10 @@ class MoodData(BaseModel):
     mood: str
     sleep: float
     screen: float
-    exercise: float
+    exercise: int
     alcohol: float
     date: str
     diary: Optional[str] = None
-
-
-
-#load_dotenv()
-#mongo_uri = os.getenv("MONGO_URI")
 
 #Load and establish connection to mongo
 client = MongoClient("mongodb+srv://second_admin:hL9l8r6liQROX0Up@glowcluster.36bwm.mongodb.net/?retryWrites=true&w=majority&appName=GlowCluster")
@@ -127,8 +122,6 @@ async def deleteAllMoods(username: str):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
    
-    
-
 #Calls deleteUserRecords from moods.py taking the username from the parameter
 @app.delete("/accounts/{username}/delete")
 async def deleteUser(username: str):
