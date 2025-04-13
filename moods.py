@@ -83,10 +83,11 @@ class DB_CRUD():
     def updateMood(self, username, mood, alcohol, exercise, screen, sleep, date):
         self.collection = self.db["moods"]
 
-        user_id = self.getUserID(username)["user_id"]
+        user_id = self.getUserID(username)
         if not user_id:
             return {"error": "User does not exist"}
 
+        user_id = user_id["user_id"]
         requirement = {"user_id": user_id, "date": date}
 
         changes = {

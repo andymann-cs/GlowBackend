@@ -54,8 +54,8 @@ async def getUsername(user_id: str):
 #Calls insertMood from moods.py, takes a body of the form of MoodData
 @app.post("/moods/{username}/insert")
 async def insertMood(username: str, data: MoodData):
-    db_crud.insertMood(username=username, **data)
-    return {"message": "Mood inserted successfully"}
+    result = db_crud.insertMood(username=username, **data)
+    return result
 
 #Calls getRandomActivity from moods.py
 @app.get("/accounts/{username}/getRandomActivity")
