@@ -183,7 +183,7 @@ async def getFactorForLastXDays(username: str, days: int, end_day: Optional[str]
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.get("/account/{username}")
-async def get_account(username: str, detail: Optional[str] = Query(default=None, description="Specific account detail to retrieve")):
+async def getAccount(username: str, detail: Optional[str] = Query(default=None, description="Specific account detail to retrieve")):
     try:
         result = db_crud.getAccountDetails(username, detail)
         if "error" in result:
@@ -192,7 +192,7 @@ async def get_account(username: str, detail: Optional[str] = Query(default=None,
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
     
-@app.get("/moods/{username}/hasLoggedIn/{date}")
+@app.get("/moods/{username}/getMoodEntry/{date}")
 async def getMoodEntry(username: str, date: str):
     try:
         return db_crud.getMoodEntry(username, date)
