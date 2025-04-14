@@ -28,6 +28,11 @@ class MoodUpdate(BaseModel):
     factor: str
     value: Union[str, int, float]
 
+class ExerciseEntry(BaseModel):
+    activity: str
+    duration: Union[int, float]
+    date: Optional[str] = None
+
 #Load and establish connection to mongo
 client = MongoClient("mongodb+srv://second_admin:hL9l8r6liQROX0Up@glowcluster.36bwm.mongodb.net/?retryWrites=true&w=majority&appName=GlowCluster")
 db = client["mood_tracker"]
@@ -144,7 +149,6 @@ async def getFactorForLastXDays(username: str, factor: str, days: int, end_day: 
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
     
-
 @app.get("/moods/average/{username}/{factor}/{days}")
 async def getAverageFactorForLastXDays(username: str, factor: str, days: int, end_day: Optional[str] = Query(default=None, description="Format: YYYY-MM-DD - Default is today")):
     if not db_crud.checkValidFactor(factor) or factor == "mood":
@@ -177,3 +181,36 @@ async def getFactorForLastXDays(username: str, days: int, end_day: Optional[str]
         return {"Top mood": result[0][0], "count": result[0][1]}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/account/{username}")
+async def get_account(username: str, detail: Optional[str] = Query(default=None, description="Specific account detail to retrieve")):
+    try:
+        result = db_crud.getAccountDetails(username, detail)
+        if "error" in result:
+            raise HTTPException(status_code=404, detail=result["error"])
+        return result
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    
+@app.get("/moods/{username}/hasLoggedIn/{date}")
+async def getMoodEntry(username: str, date: str):
+    try:
+        return db_crud.getMoodEntry(username, date)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    
+@app.post("/exercise/{username}/insert")
+async def addExerciseEntry(username: str, entry: ExerciseEntry):
+    try:
+        result = db_crud.insertExerciseEntry(
+            username=username,
+            activity=entry.activity,
+            duration=entry.duration,
+            date=entry.date
+        )
+        if "error" in result:
+            raise HTTPException(status_code=404, detail=result["error"])
+        return result
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+

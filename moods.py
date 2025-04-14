@@ -10,6 +10,8 @@ class DB_CRUD():
     def __init__(self, db):
         self.factors = ["mood", "alcohol", "sleep", "screen", "exercise"]
         self.moodList = ["angry", "sad", "tired", "happy", "content", "excited", "proud", "stressed", "sick", "unsure"]
+        self.accountDetails = ["firstname", "surname", "sex", "pronouns", "age", "activities"]
+        self.accountDetailsHide = ["password"]
         #self.uri = "mongodb+srv://sam_user:9ireiEodVKBb3Owt@glowcluster.36bwm.mongodb.net/?retryWrites=true&w=majority&appName=GlowCluster"
         #self.uri = "mongodb+srv://user_app:8JSL3N0uHNjSwnmY@glowcluster.36bwm.mongodb.net/?retryWrites=true&w=majority&appName=GlowCluster"
         #self.client = MongoClient(self.uri)
@@ -19,6 +21,8 @@ class DB_CRUD():
         #Set collection to moods initially FOR NOW
         #self.collection = self.db["moods"]
 
+
+    #####-------------------------------VALID CHECK------------------------#####
 
     #Consider Validation and error handling
     def checkValidFactor(self, testFactor):
@@ -32,6 +36,14 @@ class DB_CRUD():
             return True
         else:
             return False
+
+    def checkValidDetail(self, detail):
+        if detail in self.accountDetails:
+            return True
+        else:
+            return False
+
+    #####------------------------------ACCOUNTS----------------------------#####
 
     #takes a username, returns corresponding user_id
     def getUserID(self, username):
@@ -57,6 +69,71 @@ class DB_CRUD():
         except Exception as e:
             return{"error" : str(e)}
 
+    def getAccountDetails(self, username, detail=None):
+        self.collection = self.db["accounts"]
+        try:
+            accountDoc = self.collection.find_one({"username": username})
+            if not accountDoc:
+                return {"error": "User does not exist"}
+
+            if detail:
+                if not self.checkValidDetail(detail):
+                    return {"error": "Invalid detail"}
+                returnedDetail = accountDoc.get(detail)
+                if returnedDetail is None:
+                    return {"error": "No data for this account detail"}
+                return {detail: returnedDetail}
+            else:
+                accountDoc.pop("password", None)
+                return accountDoc
+        except Exception as e:
+            return {"error": str(e)}
+        
+    #returns a random activity from the accounts section
+    def getRandomActivity(self, username):
+        self.collection = self.db["accounts"]
+        doc = self.collection.find_one({"username" : username})
+
+        exerciseList = doc.get("exercises")
+        activity = random.randint(0,len(exerciseList)-1)
+        return exerciseList[activity]
+
+    #returns a random activity from the accounts section
+    def getAllActivities(self, username):
+        self.collection = self.db["accounts"]
+        doc = self.collection.find_one({"username" : username})
+        exerciseList = doc.get("exercises")
+        return exerciseList
+
+    #add a custom activity to an account
+    def addCustomActivity(self, username, activityName):
+        self.collection = self.db["accounts"]
+        
+        user = self.collection.find_one({"username": username})
+        if not user:
+            return {"error": "User not found"}
+        
+        if "exercises" not in user:
+            self.collection.update_one(
+                {"username": username}, {"$set": {"exercises": []}}
+        )
+
+        result = self.collection.update_one(
+            {"username": username}, {"$addToSet": {"exercises": activityName}}
+        )
+        if result.modified_count == 0:
+            return {"message": "Activity already exists"}
+        else:
+            return {"message": "Activity added successfully"}
+
+    #delete user from accounts 
+    def deleteUserRecords(self, username):
+        self.collection = self.db["accounts"] 
+        self.collection.delete_many({"username": username})
+
+
+
+#####------------------------------MOODS----------------------------#####
 
     #date as unique?? or id
     def insertMood(self, username, mood, sleep, screen, exercise, alcohol, date, diary):
@@ -122,51 +199,6 @@ class DB_CRUD():
             return {"message": f"Successfully deleted {result.deleted_count} mood entries"}
         else:
             return {"error": "No matching mood entries found to delete for user_id: " + user_result["user_id"]}
-
-    #delete user from accounts 
-    def deleteUserRecords(self, username):
-        self.collection = self.db["accounts"] 
-        self.collection.delete_many({"username": username})
-
-    #returns a random activity from the accounts section
-    def getRandomActivity(self, username):
-        self.collection = self.db["accounts"]
-        doc = self.collection.find_one({"username" : username})
-        exerciseList = doc.get("exercises")
-        activity = random.randint(0,len(exerciseList)-1)
-
-        return exerciseList[activity]
-
-    #add a custom activity to an account
-    def addCustomActivity(self, username, activityName):
-        self.collection = self.db["accounts"]
-        
-        user = self.collection.find_one({"username": username})
-        if not user:
-            return {"error": "User not found"}
-        
-        if "exercises" not in user:
-            self.collection.update_one(
-                {"username": username}, {"$set": {"exercises": []}}
-        )
-
-        result = self.collection.update_one(
-            {"username": username}, {"$addToSet": {"exercises": activityName}}
-        )
-        if result.modified_count == 0:
-            return {"message": "Activity already exists"}
-        else:
-            return {"message": "Activity added successfully"}
-
-    #check if log exists for a specific person and day
-    def hasLoggedMoodToday(self, username, date):
-        user_id = self.getUserID(username)["user_id"]
-
-        self.collection = self.db["moods"]
-        mood = self.collection.find_one({"user_id": user_id, "date": date})
-        return {"logged": bool(mood)}
-
-
 
     #Grab a list of the specified factor for the whole of a month
     def getFactorForXDays(self, username, factor, days=30, end_day=None):
@@ -234,6 +266,44 @@ class DB_CRUD():
         filteredDocResult = [v for v in docResult if v is not None]
         countedList = Counter(filteredDocResult)
         return countedList.most_common(1)   
+
+        #check if log exists for a specific person and day
+    
+    def hasLoggedMoodToday(self, username, date):
+        returnedDoc = self.getMoodEntry(username, date)
+        return {"logged": bool(returnedDoc)}
+
+    def getMoodEntry(self, username, date):
+        user_id = self.getUserID(username)["user_id"]
+
+        self.collection = self.db["moods"]
+        moodDoc = self.collection.find_one({"user_id": user_id, "date": date})
+        return moodDoc
+
+
+#####----------------------------EXERCISE-ENTRY----------------------#####
+    
+    def insertExerciseEntry(self, username, activity, duration, date=None):
+        user = self.getUserID(username)
+        
+        if not user:
+            return {"error": "User not found"}
+        
+        if date is None:
+            date = datetime.today().strftime("%Y-%m-%d")
+
+        user_id = user["user_id"]
+        exercise_entry = {
+                "user_id": user_id,
+                "activity": activity,
+                "duration": duration,
+                "date": date
+        }
+
+        self.collection = self.db["exerciseHistory"]
+        self.collection.insert_one(exercise_entry)
+        
+        return{"message" : "exercise entry added"}
 
 
 
