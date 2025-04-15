@@ -6,9 +6,10 @@ from fastapi import FastAPI, HTTPException, Query
 from pymongo import MongoClient
 from dotenv import load_dotenv
 from pydantic import BaseModel
-from typing import Optional, Union
+from typing import Optional, Union, List
 from datetime import datetime
 
+from loginsignup import loginSignup
 from moods import DB_CRUD
 from nhslink import get_nhs_search_urls
 
@@ -33,11 +34,27 @@ class ExerciseEntry(BaseModel):
     duration: Union[int, float]
     date: Optional[str] = None
 
+class AccountEntry(BaseModel):
+    username: str
+    password: str
+    password_repeat: str
+    name: str
+    age: int
+    sports: List[str]
+    hobbies: List[str]
+    sex: str
+
+class LoginEntry(BaseModel):
+    username: str
+    password: str
+
 #Load and establish connection to mongo
 client = MongoClient("mongodb+srv://second_admin:hL9l8r6liQROX0Up@glowcluster.36bwm.mongodb.net/?retryWrites=true&w=majority&appName=GlowCluster")
 db = client["mood_tracker"]
 app = FastAPI()
+
 db_crud = DB_CRUD(db)
+loginsignup = loginSignup(db)
 
 #just a root function - test if fastAPI is responding
 @app.get("/")
@@ -214,3 +231,34 @@ async def addExerciseEntry(username: str, entry: ExerciseEntry):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+@app.post("/accounts/login")
+async def tryLogin(loginData: LoginEntry):
+    try:
+        result = loginsignup.tryLogin(
+            username=loginData.username,
+            password_decrypted=loginData.password
+        )
+        if "error" in result:
+            raise HTTPException(status_code=404, detail=result["error"])
+        return result
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    
+@app.post("/accounts/signup")
+async def tryLogin(signupData: AccountEntry):
+    try:
+        result = loginsignup.trySignUp(
+            username=signupData.username,
+            password=signupData.password,
+            password_decrypted=signupData.password_repeat,
+            name= signupData.name,
+            age= signupData.age,
+            sports= signupData.sports,
+            hobbies= signupData.hobbies,
+            sex= signupData.sex
+        )
+        if "error" in result:
+            raise HTTPException(status_code=404, detail=result["error"])
+        return result
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))

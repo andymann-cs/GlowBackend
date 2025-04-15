@@ -20,15 +20,16 @@ class loginSignup():
     def encrypt(self, password): ##PLACEHOLDER FOR ACTUAL ENCRYPTION, BOTH LOGIN AND PASSWORD USE THIS
         return password
 
-    def verify_login(self, username, password_decrypted):
+    def tryLogin(self, username, password_decrypted):
         login_successful = False  # Custom signal with username
         password_encrypted = self.encrypt(password_decrypted)
 
         self.collection = self.db["accounts"]
         user = self.collection.find_one({"username": username, "password": password_encrypted})
         if user:
-            login_successful = True
-        return login_successful
+            return {"message": "login successful!"}
+        return{"error": "login failed please try again"}
+        
 
 #window.login_successful.connect(lambda username: print(f"Logged in as: {username}")) --What is this?
 
@@ -41,7 +42,7 @@ class loginSignup():
         return False
 
 
-    def SignupLogic(self, username, password, password_repeat, name, age, sports, hobbies, sex): #Bundles all inputs together atm
+    def trySignUp(self, username, password, password_repeat, name, age, sports, hobbies, sex): #Bundles all inputs together atm
         #signup_successful = False  # Define signal
 
         if password != password_repeat:
@@ -67,6 +68,5 @@ class loginSignup():
             "hobbies": hobbies,
             "sex": sex, 
         })
-        
 
         return {"message": "Account created Successfully"}
