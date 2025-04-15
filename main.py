@@ -245,12 +245,12 @@ async def tryLogin(loginData: LoginEntry):
         raise HTTPException(status_code=500, detail=str(e))
     
 @app.post("/accounts/signup")
-async def tryLogin(signupData: AccountEntry):
+async def trySignup(signupData: AccountEntry):
     try:
         result = loginsignup.trySignUp(
             username=signupData.username,
             password=signupData.password,
-            password_decrypted=signupData.password_repeat,
+            password_repeat=signupData.password_repeat,
             name= signupData.name,
             age= signupData.age,
             sports= signupData.sports,
