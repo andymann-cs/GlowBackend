@@ -8,7 +8,7 @@ import random
 
 class DB_CRUD():
     def __init__(self, db):
-        self.factors = ["mood", "alcohol", "sleep", "screen", "exercise"]
+        self.factors = ["mood", "alcohol", "sleep", "screen", "exercise", "diary"]
         self.moodList = ["angry", "sad", "tired", "happy", "content", "excited", "proud", "stressed", "sick", "unsure"]
         self.accountDetails = ["firstname", "surname", "sex", "pronouns", "age", "activities"]
         self.accountDetailsHide = ["password"]
@@ -159,7 +159,7 @@ class DB_CRUD():
         
         return{"message" : "mood entry added"}
 
-    #update an exsiting entry (NEEDS TESTING)
+    #NEEDS RENAMING - CHANGES ANY FACTOR
     def updateMood(self, username, factor, value, date):
 
         user_id = self.getUserID(username)
