@@ -109,11 +109,11 @@ class DB_CRUD():
     def addCustomActivity(self, username, activityName):
         self.collection = self.db["accounts"]
         
-        user = self.collection.find_one({"username": username})
-        if not user:
+        account = self.collection.find_one({"username": username})
+        if not account:
             return {"error": "User not found"}
         
-        if "exercises" not in user:
+        if "exercises" not in account:
             self.collection.update_one(
                 {"username": username}, {"$set": {"exercises": []}}
         )
@@ -174,10 +174,17 @@ class DB_CRUD():
                 return{"error": "Invalid mood to update"}
 
         user_id = user_id["user_id"]
-        requirement = {"user_id": user_id, "date": date}
 
+        doc = self.collection.find_one({"username" : username, "date": date})
+        if factor not in doc:
+            self.collection.update_one(
+                {"username": username, "date": date}, {"$set": {factor: []}}
+        )
+
+        requirement = {"user_id": user_id, "date": date}
         changes = {"$set": {factor: value}}
         self.collection = self.db["moods"]
+
         result = self.collection.update_one(requirement, changes)
         if result.matched_count == 0:
             return {"error": "No matching mood entry found to update"}
