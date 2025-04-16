@@ -12,15 +12,7 @@ class DB_CRUD():
         self.moodList = ["angry", "sad", "tired", "happy", "content", "excited", "proud", "stressed", "sick", "unsure"]
         self.accountDetails = ["firstname", "surname", "sex", "pronouns", "age", "activities"]
         self.accountDetailsHide = ["password"]
-        #self.uri = "mongodb+srv://sam_user:9ireiEodVKBb3Owt@glowcluster.36bwm.mongodb.net/?retryWrites=true&w=majority&appName=GlowCluster"
-        #self.uri = "mongodb+srv://user_app:8JSL3N0uHNjSwnmY@glowcluster.36bwm.mongodb.net/?retryWrites=true&w=majority&appName=GlowCluster"
-        #self.client = MongoClient(self.uri)
-        #self.client = MongoClient("mongodb+srv://user_app:8JSL3N0uHNjSwnmY@glowcluster.36bwm.mongodb.net/?retryWrites=true&w=majority&appName=GlowCluster")
         self.db = db
-        
-        #Set collection to moods initially FOR NOW
-        #self.collection = self.db["moods"]
-
 
     #####-------------------------------VALID CHECK------------------------#####
 
@@ -329,3 +321,12 @@ class DB_CRUD():
 # collection = db["accounts"]
 # result = collection.find_one({"username": "sammy"})
 # print(result["username"] if result else None)
+
+        #self.uri = "mongodb+srv://sam_user:9ireiEodVKBb3Owt@glowcluster.36bwm.mongodb.net/?retryWrites=true&w=majority&appName=GlowCluster"
+        #self.uri = "mongodb+srv://user_app:8JSL3N0uHNjSwnmY@glowcluster.36bwm.mongodb.net/?retryWrites=true&w=majority&appName=GlowCluster"
+        #self.client = MongoClient(self.uri)
+        #self.client = MongoClient("mongodb+srv://user_app:8JSL3N0uHNjSwnmY@glowcluster.36bwm.mongodb.net/?retryWrites=true&w=majority&appName=GlowCluster")
+
+        
+        #Set collection to moods initially FOR NOW
+        #self.collection = self.db["moods"]
