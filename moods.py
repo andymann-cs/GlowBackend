@@ -38,7 +38,8 @@ class DB_CRUD():
     def bson_to_dict(self, doc):
         if not doc:
             return {}
-        doc["_id"] = str(doc["_id"])  # Convert ObjectId to string
+        doc = dict(doc)
+        doc.pop("_id", None) 
         return doc
 
     #####------------------------------ACCOUNTS----------------------------#####
