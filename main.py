@@ -29,6 +29,10 @@ class MoodUpdate(BaseModel):
     factor: str
     value: Union[str, int, float]
 
+class AccountUpdate(BaseModel):
+    detail: str
+    value: Union[str, List[str]]
+
 class ExerciseEntry(BaseModel):
     activity: str
     duration: Union[int, float]
@@ -262,3 +266,23 @@ async def trySignup(signupData: AccountEntry):
         return result
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+    
+@app.post("/accounts/{username}/addHobby")
+async def addCustomHobby(username: str, hobby: str):
+    result = db_crud.addCustomHobby(username, hobby)
+    if "error" in result:
+        raise HTTPException(status_code=404, detail=result["error"])
+    return result
+
+@app.put("/accounts/{username}/update")
+async def updateProfile(username: str, update: AccountUpdate):
+    try:
+        result = db_crud.updateProfile(username=username,
+                                    detail= update.detail,
+                                    value= update.value
+                                )
+        if "error" in result:
+            raise HTTPException(status_code=404, detail="uh oh")
+        return result
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))    

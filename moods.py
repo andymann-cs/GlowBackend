@@ -10,7 +10,7 @@ class DB_CRUD():
     def __init__(self, db):
         self.factors = ["mood", "alcohol", "sleep", "screen", "exercise", "diary"]
         self.moodList = ["angry", "sad", "tired", "happy", "content", "excited", "proud", "stressed", "sick", "unsure"]
-        self.accountDetails = ["firstname", "surname", "sex", "pronouns", "age", "activities"]
+        self.accountDetails = ["firstname", "surname", "sex", "pronouns", "age", "activities", "hobbies"]
         self.accountDetailsHide = ["password"]
         self.db = db
 
@@ -118,11 +118,58 @@ class DB_CRUD():
         else:
             return {"message": "Activity added successfully"}
 
+    #add a custom activity to an account
+    def addCustomHobby(self, username, hobbyName):
+        self.collection = self.db["accounts"]
+        
+        account = self.collection.find_one({"username": username})
+        if not account:
+            return {"error": "User not found"}
+        
+        if "hobbies" not in account:
+            self.collection.update_one(
+                {"username": username}, {"$set": {"hobbies": []}}
+        )
+
+        result = self.collection.update_one(
+            {"username": username}, {"$addToSet": {"hobbies": hobbyName}}
+        )
+        if result.modified_count == 0:
+            return {"message": "Activity already exists"}
+        else:
+            return {"message": "Activity added successfully"}
+
     #delete user from accounts 
     def deleteUserRecords(self, username):
         self.collection = self.db["accounts"] 
         self.collection.delete_many({"username": username})
 
+
+    def updateProfile(self, username, detail, value):
+
+        user_id = self.getUserID(username)
+        if not user_id:
+            return {"error": "User does not exist"}
+
+        if not self.checkValidDetail(detail):
+            return{"error": "Invalid account detail to update"}
+
+        user_id = user_id["user_id"]
+
+        # doc = self.collection.find_one({"username" : username, "date": date})
+        # if factor not in doc:
+        #     self.collection.update_one(
+        #         {"username": username, "date": date}, {"$set": {factor: []}}
+        # )
+
+        requirement = {"user_id": user_id}
+        changes = {"$set": {detail: value}}
+        self.collection = self.db["accounts"]
+
+        result = self.collection.update_one(requirement, changes)
+        if result.matched_count == 0:
+            return {"error": "No matching profile found to update"}
+        return {"message": "profile updated successfully"}
 
 
 #####------------------------------MOODS----------------------------#####
