@@ -170,7 +170,7 @@ class DB_CRUD():
         #         {"username": username, "date": date}, {"$set": {factor: []}}
         # )
 
-        requirement = {"user_id": user_id}
+        requirement = {"username": username}
         changes = {"$set": {detail: value}}
         self.collection = self.db["accounts"]
 
