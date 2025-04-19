@@ -1,6 +1,6 @@
 from pymongo import MongoClient
 from moods import DB_CRUD 
-
+from bson import ObjectId
 
 MONGODB_URI = "mongodb+srv://second_admin:hL9l8r6liQROX0Up@glowcluster.36bwm.mongodb.net/?retryWrites=true&w=majority&appName=GlowCluster"  # Local MongoDB server, change if needed
 DB_NAME = "mood_tracker"  
@@ -38,3 +38,26 @@ def test_checkValidDetai():
         assert dbtest.checkValidDetail("firstname") == True
         assert dbtest.checkValidDetail("location") == False
         assert dbtest.checkValidDetail("age") == True
+
+
+
+
+def test_get_user_id_existing_user():
+    dbtest = DB_CRUD(db)  
+    result = dbtest.getUserID("sammy")
+    assert "user_id" in result
+
+def test_get_user_id_nonexistent_user():
+    dbtest = DB_CRUD(db)  
+    result = dbtest.getUserID("doesnotexist")
+    assert result == {"error": "User does not exist"}
+
+def test_get_username_existing_user():
+    dbtest = DB_CRUD(db)  
+    result = dbtest.getUsername("67e183c3c468744e4b235553")
+    assert "username" in result
+
+def test_get_username_nonexistent_user():
+    dbtest = DB_CRUD(db)  
+    result = dbtest.getUsername(ObjectId("61e483e903243904c0236735"))
+    assert result == {"error": "User does not exist"}
