@@ -35,7 +35,7 @@ class DB_CRUD():
         else:
             return False
 
-    def bson_to_dict(doc):
+    def bson_to_dict(self, doc):
         if not doc:
             return {}
         doc["_id"] = str(doc["_id"])  # Convert ObjectId to string
