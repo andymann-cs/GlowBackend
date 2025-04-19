@@ -65,7 +65,7 @@ class DB_CRUD():
         self.collection = self.db["accounts"]
         try:
             accountDoc = self.collection.find_one({"username": username})
-            return {"s1": "sd"}
+            return {"s1": username}
             if not accountDoc:
                 return {"error": "User does not exist"}
 
