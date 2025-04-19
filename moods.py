@@ -35,6 +35,12 @@ class DB_CRUD():
         else:
             return False
 
+    def bson_to_dict(doc):
+        if not doc:
+            return {}
+        doc["_id"] = str(doc["_id"])  # Convert ObjectId to string
+        return doc
+
     #####------------------------------ACCOUNTS----------------------------#####
 
     #takes a username, returns corresponding user_id
@@ -65,7 +71,6 @@ class DB_CRUD():
         self.collection = self.db["accounts"]
         try:
             accountDoc = self.collection.find_one({"username": username})
-            return accountDoc["password"]
             if not accountDoc:
                 return {"error": "User does not exist"}
 
@@ -78,7 +83,8 @@ class DB_CRUD():
                 return {detail: returnedDetail}
             else:
                 accountDoc.pop("password", None)
-                return accountDoc
+                accountDoc.pop("_id", None)
+                return self.bson_to_dict(accountDoc)
         except Exception as e:
             return {"error": str(e)}
         
