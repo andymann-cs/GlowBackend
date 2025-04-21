@@ -31,7 +31,7 @@ class MoodUpdate(BaseModel):
 
 class AccountUpdate(BaseModel):
     detail: str
-    value: Union[str, List[str]]
+    value: Union[str, List[str], int]
 
 class ExerciseEntry(BaseModel):
     activity: str
@@ -149,7 +149,7 @@ async def hasLoggedIn(username: str, date: str):
         raise HTTPException(status_code=500, detail=str(e))
     
 @app.get("/nhs-search")
-def nhs_search(keywords: str):
+def nhs_search(keywords: List[str]):
     search_urls = get_nhs_search_urls(keywords)
     return {"search_urls": search_urls}
 

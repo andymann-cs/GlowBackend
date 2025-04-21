@@ -359,8 +359,8 @@ class DB_CRUD():
         
         return{"message" : "exercise entry added"}
 
-
-
+ #   def 
+#
 # uri = "mongodb+srv://user_app:8JSL3N0uHNjSwnmY@glowcluster.36bwm.mongodb.net/?retryWrites=true&w=majority&appName=GlowCluster"
 # client = MongoClient(uri)
 # db = client["mood_tracker"]
