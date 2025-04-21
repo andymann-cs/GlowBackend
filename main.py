@@ -282,7 +282,7 @@ async def updateProfile(username: str, update: AccountUpdate):
                                     value= update.value
                                 )
         if "error" in result:
-            raise HTTPException(status_code=404, detail=result["error"])
+            raise HTTPException(status_code=404, detail=result)
         return result
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))    
