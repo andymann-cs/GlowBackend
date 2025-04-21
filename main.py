@@ -149,7 +149,7 @@ async def hasLoggedIn(username: str, date: str):
         raise HTTPException(status_code=500, detail=str(e))
     
 @app.get("/nhs-search")
-def nhs_search(keywords: List[str]):
+def nhs_search(keywords: str):
     search_urls = get_nhs_search_urls(keywords)
     return {"search_urls": search_urls}
 
