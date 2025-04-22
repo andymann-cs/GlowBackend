@@ -266,8 +266,7 @@ async def trySignup(signupData: AccountEntry):
 @app.post("/accounts/{username}/addHobby")
 async def addCustomHobby(username: str, hobby: str):
     result = db_crud.addCustomHobby(username, hobby)
-    if "error" in result:
-        return result
+    return result
 
 @app.put("/accounts/{username}/update")
 async def updateProfile(username: str, update: AccountUpdate):
