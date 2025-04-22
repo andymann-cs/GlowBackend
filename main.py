@@ -205,8 +205,6 @@ async def getFactorForLastXDays(username: str, days: int, end_day: Optional[str]
 async def getAccount(username: str, detail: Optional[str] = Query(default=None, description="Specific account detail to retrieve")):
     try:
         result = db_crud.getAccountDetails(username, detail)
-        if "error" in result:
-            raise HTTPException(status_code=404, detail=result["error"])
         return result
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -269,8 +267,7 @@ async def trySignup(signupData: AccountEntry):
 async def addCustomHobby(username: str, hobby: str):
     result = db_crud.addCustomHobby(username, hobby)
     if "error" in result:
-        raise HTTPException(status_code=404, detail=result["error"])
-    return result
+        return result
 
 @app.put("/accounts/{username}/update")
 async def updateProfile(username: str, update: AccountUpdate):
