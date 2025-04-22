@@ -163,10 +163,10 @@ class DB_CRUD():
     def deleteUserRecords(self, username):
         self.collection = self.db["accounts"] 
         self.collection.delete_many({"username": username})
+        return {"message":"deleted any existing account"}
 
 
     def updateProfile(self, username, detail, value):
-
         user_id = self.getUserID(username)
         if not user_id:
             return {"error": "User does not exist"}
