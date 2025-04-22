@@ -109,7 +109,12 @@ class DB_CRUD():
     def getAllActivities(self, username):
         self.collection = self.db["accounts"]
         doc = self.collection.find_one({"username" : username})
+        if not doc:
+            return {"error": "User does not exist"}
+
         exerciseList = doc.get("exercises")
+        if not exerciseList:
+            return {"error": "No activities available"}
         return exerciseList
 
     #add a custom activity to an account
