@@ -99,8 +99,6 @@ async def getRandomActivity(username: str):
 @app.post("/accounts/{username}/addActivity")
 async def addCustomActivity(username: str, activity: str):
     result = db_crud.addCustomActivity(username, activity)
-    if "error" in result:
-        raise HTTPException(status_code=404, detail=result["error"])
     return result
 
 #Calls updateMood from moods.py taking username from the path, and mood entry from body provided
