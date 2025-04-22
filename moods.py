@@ -95,6 +95,10 @@ class DB_CRUD():
         doc = self.collection.find_one({"username" : username})
 
         exerciseList = doc.get("exercises")
+        
+        if not exerciseList:
+            return {"error": "no activities available"}
+
         activity = random.randint(0,len(exerciseList)-1)
         return exerciseList[activity]
 
