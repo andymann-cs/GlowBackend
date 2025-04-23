@@ -163,7 +163,6 @@ class DB_CRUD():
     def deleteUserRecords(self, username):
         self.collection = self.db["accounts"] 
         self.collection.delete_many({"username": username})
-        return {"message":"deleted any existing account"}
 
 
     def updateProfile(self, username, detail, value):
