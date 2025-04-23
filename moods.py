@@ -232,7 +232,8 @@ class DB_CRUD():
                 return{"error": "Invalid mood to update"}
 
         user_id = user_id["user_id"]
-
+        
+        self.collection = self.db["moods"]
         doc = self.collection.find_one({"username" : username, "date": date})
         
         if doc is None:
