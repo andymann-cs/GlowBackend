@@ -180,7 +180,7 @@ async def getAverageFactorForLastXDays(username: str, factor: str, days: int, en
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.get("/moods/mostPopularMood/{username}/{days}")
-async def getFactorForLastXDays(username: str, days: int, end_day: Optional[str] = Query(default=None, description="Format: YYYY-MM-DD - Default is today")):
+async def getMostPopularMoodLastXDays(username: str, days: int, end_day: Optional[str] = Query(default=None, description="Format: YYYY-MM-DD - Default is today")):
     if end_day is not None:
         try:
             datetime.strptime(end_day, "%Y-%m-%d")
