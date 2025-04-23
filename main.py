@@ -103,9 +103,9 @@ async def addCustomActivity(username: str, activity: str):
 
 #Calls updateMood from moods.py taking username from the path, and mood entry from body provided
 @app.put("/moods/{username}/update")
-async def updateMoodFactor(username: str, date: str, update: MoodUpdate):
+async def updateMood(username: str, date: str, update: MoodUpdate):
     try:
-        result = db_crud.updateMood(username=username,
+        result = db_crud.updateMoodFactor(username=username,
                                     factor=update.factor,
                                     value=update.value,
                                     date=date
