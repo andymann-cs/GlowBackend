@@ -197,8 +197,8 @@ class DB_CRUD():
     def insertMood(self, username, mood, sleep, screen, exercise, alcohol, date, diary):
 
         user = self.getUserID(username)
-        if not user:
-            return {"error" : "User Does Not Exist"}
+        if not user or "user_id" not in user:
+            return {"error": "User does not exist"}
         
         user_id = user["user_id"]
         mood_entry = {
