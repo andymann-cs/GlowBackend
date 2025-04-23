@@ -218,7 +218,7 @@ class DB_CRUD():
         return{"message" : "mood entry added"}
 
     #NEEDS RENAMING - CHANGES ANY FACTOR
-    def updateMoodFactor(self, username, factor, value, date):
+    def updateFactor(self, username, factor, value, date):
 
         user_id = self.getUserID(username)
         if not user_id or "user_id" not in user_id:

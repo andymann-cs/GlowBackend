@@ -89,7 +89,7 @@ async def insertMood(username: str, data: MoodData):
 
 #Calls getRandomActivity from moods.py
 @app.get("/accounts/{username}/getRandomActivity")
-async def getRandomActivity(username: str):
+async def getRandomExercise(username: str):
     try:
         return db_crud.getRandomActivity(username)
     except Exception as e:
@@ -97,15 +97,15 @@ async def getRandomActivity(username: str):
 
 #Calls addCustomActivity from moods.py, taking the username from the path, and body supplied
 @app.post("/accounts/{username}/addActivity")
-async def addCustomActivity(username: str, activity: str):
+async def addCustomExercise(username: str, activity: str):
     result = db_crud.addCustomActivity(username, activity)
     return result
 
 #Calls updateMood from moods.py taking username from the path, and mood entry from body provided
 @app.put("/moods/{username}/update")
-async def updateMood(username: str, date: str, update: MoodUpdate):
+async def updateFactor(username: str, date: str, update: MoodUpdate):
     try:
-        result = db_crud.updateMoodFactor(username=username,
+        result = db_crud.updateFactor(username=username,
                                     factor=update.factor,
                                     value=update.value,
                                     date=date
