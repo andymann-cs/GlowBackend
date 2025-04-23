@@ -275,9 +275,11 @@ class DB_CRUD():
         if not self.checkValidFactor(factor):
             return None
         
-        userID = self.getUserID(username)["user_id"]
-        if not userID:
+        userID = self.getUserID(username)
+        if not userID or "user_id" not in userID:
             return {"error": "User does not exist"}
+
+        userID = userID["user_id"]
 
         self.collection = self.db["moods"]
         moodDict = {}
