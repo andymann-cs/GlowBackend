@@ -10,7 +10,7 @@ class DB_CRUD():
     def __init__(self, db):
         self.factors = ["mood", "alcohol", "sleep", "screen", "exercise", "diary"]
         self.moodList = ["angry", "sad", "tired", "happy", "content", "excited", "proud", "stressed", "sick", "unsure"]
-        self.accountDetails = ["name", "sex", "pronouns", "age", "activities", "hobbies"]
+        self.accountDetails = ["name", "sex", "pronouns", "age", "exercises", "hobbies"]
         self.accountDetailsHide = ["password"]
         self.db = db
 
