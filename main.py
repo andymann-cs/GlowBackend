@@ -110,9 +110,6 @@ async def updateMood(username: str, date: str, update: MoodUpdate):
                                     value=update.value,
                                     date=date
                                 )
-        
-        if "error" in result:
-            raise HTTPException(status_code=404, detail="uh oh")
         return result
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))    
