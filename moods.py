@@ -221,7 +221,7 @@ class DB_CRUD():
     def updateMoodFactor(self, username, factor, value, date):
 
         user_id = self.getUserID(username)
-        if not user_id:
+        if not user_id or "user_id" not in user_id:
             return {"error": "User does not exist"}
 
         if not self.checkValidFactor(factor):
