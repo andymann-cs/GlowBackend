@@ -149,7 +149,7 @@ def nhs_search(keywords: str):
 @app.get("/moods/lastXDays/{username}/{factor}/{days}")
 async def getFactorForLastXDays(username: str, factor: str, days: int, end_day: Optional[str] = Query(default=None, description="Format: YYYY-MM-DD - Default is today")):
     if not db_crud.checkValidFactor(factor):
-       raise HTTPException(status_code=400, detail="Invalid factor")
+       return {"error" : "Invalid factor"}
     
     if end_day is not None:
         try:
