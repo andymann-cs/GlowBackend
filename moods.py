@@ -234,6 +234,10 @@ class DB_CRUD():
         user_id = user_id["user_id"]
 
         doc = self.collection.find_one({"username" : username, "date": date})
+        
+        if doc is None:
+            return {"error": "No document found"}
+
         if factor not in doc:
             self.collection.update_one(
                 {"username": username, "date": date}, {"$set": {factor: []}}
