@@ -97,8 +97,8 @@ async def getRandomExercise(username: str):
 
 #Calls addCustomActivity from moods.py, taking the username from the path, and body supplied
 @app.post("/accounts/{username}/addExercise")
-async def addCustomExercise(username: str, activity: str):
-    result = db_crud.addCustomActivity(username, activity)
+async def addCustomExercise(username: str, exercise: str):
+    result = db_crud.addCustomExercise(username, exercise)
     return result
 
 #Calls updateMood from moods.py taking username from the path, and mood entry from body provided

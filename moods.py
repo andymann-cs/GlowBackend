@@ -118,7 +118,7 @@ class DB_CRUD():
         return exerciseList
 
     #add a custom activity to an account
-    def addCustomActivity(self, username, activityName):
+    def addCustomExercise(self, username, activityName):
         self.collection = self.db["accounts"]
         
         account = self.collection.find_one({"username": username})
