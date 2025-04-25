@@ -366,8 +366,10 @@ class DB_CRUD():
         end = datetime(year + 1, 1, 1)
 
         self.collection = self.db["moods"]
-        moodDoc = self.collection.find({"user_id": user_id, "date": year})
-        return (start, end)
+        moodDoc = self.collection.find({"user_id": user_id, "date": {"$gte": self.format_date(start),
+                                                                    "$lt": self.format_date(end)}})
+        return [doc for doc in moodDoc]
+
 
 
 #####----------------------------EXERCISE-ENTRY----------------------#####
