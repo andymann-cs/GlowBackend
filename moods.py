@@ -365,7 +365,7 @@ class DB_CRUD():
 
         self.collection = self.db["moods"]
         moodDoc = self.collection.find_one({"user_id": user_id, "date": year2})
-        return moodDoc
+        return self.bson_to_dict(moodDoc)
 
 
 
