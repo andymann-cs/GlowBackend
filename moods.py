@@ -360,11 +360,11 @@ class DB_CRUD():
         user_id = self.getUserID(username)["user_id"]
         year = int(year)
 
-        start = f"{year}-01-01"
-        end = f"{year + 1}-01-01"
+        start = datetime(year, 1, 1)
+        end = datetime(year + 1, 1, 1)
 
         self.collection = self.db["moods"]
-        moodDoc = self.collection.find_one({"user_id": user_id, "date": {"gte":start, "lt": end}})
+        moodDoc = self.collection.find_one({"user_id": user_id, "date": {"gte":self.format_date(start), "lt": self.format_date(end)}})
         return self.bson_to_dict(moodDoc)
 
 
