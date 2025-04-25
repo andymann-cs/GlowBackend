@@ -365,7 +365,7 @@ class DB_CRUD():
 
         self.collection = self.db["moods"]
         moodDoc = self.collection.find({"user_id": user_id, "date": {"gte":start, "lt": end}})
-        return (self.bson_to_dict(doc) for doc in moodDoc)
+        return [self.bson_to_dict(doc) for doc in moodDoc]
 
 
 
