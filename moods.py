@@ -359,6 +359,7 @@ class DB_CRUD():
     def getMoodEntryByYear(self, username, year):
         user_id = self.getUserID(username)["user_id"]
         
+        year = int(year)
         start = f"{year}-01-01"
         end = f"{year+1}-01-01"
 
