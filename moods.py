@@ -43,7 +43,10 @@ class DB_CRUD():
         return doc
 
     def format_date(self, date):
-        return date.strftime("%Y-%m-%d")
+        if isinstance(date, str): 
+            date = datetime.strptime(date, "%Y-%m-%d")
+        return datetime.strftime()
+  
 
 
     #####------------------------------ACCOUNTS----------------------------#####
