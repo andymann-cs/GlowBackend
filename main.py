@@ -211,9 +211,9 @@ async def getMoodEntry(username: str, date: str):
         raise HTTPException(status_code=500, detail=str(e))
     
 @app.get("/moods/{username}/getMoodEntry/{year}")
-async def getMoodEntryByYear(username: str, date: str):
+async def getMoodEntryByYear(username: str, year: int):
     try:
-        return db_crud.getMoodEntryByYear(username, date)
+        return db_crud.getMoodEntryByYear(username, year)
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
     
