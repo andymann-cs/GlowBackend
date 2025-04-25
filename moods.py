@@ -42,8 +42,9 @@ class DB_CRUD():
         doc.pop("_id", None) 
         return doc
 
-    def format_date(self, dt):
-        return datetime.strptime(dt, "%Y-%m-%d")
+    def format_date(self, date):
+        return date.strftime("%Y-%m-%d")
+
 
     #####------------------------------ACCOUNTS----------------------------#####
 
@@ -364,8 +365,8 @@ class DB_CRUD():
         end = f"{year+1}-01-01"
 
         self.collection = self.db["moods"]
-        moodDoc = self.collection.find({"user_id": user_id, "date": datetime.strptime("2025-03-07", "%Y-%m-%d")})
-        return (self.bson_to_dict(doc) for doc in moodDoc)
+        moodDoc = self.collection.find_one({"user_id": user_id, "date": {"gte":self.format_date(start), "lt": self.format_date(end)}})
+        return self.bson_to_dict(moodDoc)
 
 
 
