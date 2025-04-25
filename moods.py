@@ -355,7 +355,7 @@ class DB_CRUD():
         moodDoc = self.collection.find_one({"user_id": user_id, "date": date})
         return self.bson_to_dict(moodDoc)
 
-    def getMoodEntryByYear(self, username, date, year):
+    def getMoodEntryByYear(self, username, year):
         user_id = self.getUserID(username)
         if not user_id or "user_id" not in user_id:
             return {"error": "User does not exist"}

@@ -210,6 +210,13 @@ async def getMoodEntry(username: str, date: str):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
     
+@app.get("/moods/{username}/getMoodEntry/{year}")
+async def getMoodEntryByYear(username: str, date: str):
+    try:
+        return db_crud.getMoodEntryByYear(username, date)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    
 @app.post("/exercise/{username}/insert")
 async def addExerciseEntry(username: str, entry: ExerciseEntry):
     try:
