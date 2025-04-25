@@ -364,7 +364,7 @@ class DB_CRUD():
         end = f"{year + 1}-01-01"
 
         self.collection = self.db["moods"]
-        moodDoc = self.collection.find_one({"user_id": user_id, "date": {"gte":start, "lt": end}})
+        moodDoc = self.collection.find_one({"user_id": user_id, "date": "2025-01-06"})
         return moodDoc
 
 
