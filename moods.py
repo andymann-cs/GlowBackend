@@ -366,8 +366,7 @@ class DB_CRUD():
         end = datetime(year + 1, 1, 1)
 
         self.collection = self.db["moods"]
-        moodDoc = self.collection.find({"user_id": user_id, "date": {"$gte" : self.format_date(start),
-                                                                    "$lt" : self.format_date(end)}})
+        moodDoc = self.collection.find({"user_id": user_id, "date": "2025-01-03"})
         return [self.bson_to_dict(mood) for mood in moodDoc]
 
 #####----------------------------EXERCISE-ENTRY----------------------#####
