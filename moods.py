@@ -45,7 +45,7 @@ class DB_CRUD():
     def format_date(self, date):
         if isinstance(date, str): 
             date = datetime.strptime(date, "%Y-%m-%d")
-        return datetime.strftime()
+        return date.strftime("%Y-%m-%d")
   
 
 
