@@ -346,10 +346,8 @@ class DB_CRUD():
         return {"logged": bool(returnedDoc)}
 
     def getMoodEntry(self, username, date):
-        user_id = self.getUserID(username)
-        if not user_id or "user_id" not in user_id:
-            return {"error": "User does not exist"}
-        user_id = username["user_id"]
+        user_id = self.getUserID(username)["user_id"]
+
 
         self.collection = self.db["moods"]
         moodDoc = self.collection.find_one({"user_id": user_id, "date": date})
