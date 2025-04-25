@@ -359,7 +359,7 @@ class DB_CRUD():
         user_id = self.getUserID(username)
         if not user_id or "user_id" not in user_id:
             return {"error": "User does not exist"}
-        user_id = username["user_id"]
+        user_id = user_id["user_id"]
 
         start = f"{year}-01-01"
         end = f"{year + 1}-01-01"
