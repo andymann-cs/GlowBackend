@@ -356,15 +356,15 @@ class DB_CRUD():
         moodDoc = self.collection.find_one({"user_id": user_id, "date": date})
         return self.bson_to_dict(moodDoc)
     
-    def getMoodEntryByYear(self, username, year):
+    def getMoodEntryByYear(self, username, year2):
         user_id = self.getUserID(username)["user_id"]
-        year = int(year)
 
+        year = 2025
         start = f"{year}-01-01"
         end = f"{year + 1}-01-01"
 
         self.collection = self.db["moods"]
-        moodDoc = self.collection.find_one({"user_id": user_id, "date": "2025-01-06"})
+        moodDoc = self.collection.find_one({"user_id": user_id, "date": year2})
         return moodDoc
 
 
