@@ -6,6 +6,19 @@ from collections import Counter
 from statistics import mean
 import random
 
+# """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+# DB_CRUD: A class for handling account and mood data, which is stored in a NoSQL Database
+
+
+# Author: Andy Lin
+# Last Updated:
+# Desc: 
+#     - Datebase Operations - (Create, Read, Update, Delete)
+#     - Account, Mood Document retrieval for analytics
+#     - Add entries and custom activities
+# """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+
 class DB_CRUD():
     def __init__(self, db):
         self.factors = ["mood", "alcohol", "sleep", "screen", "exercise", "diary"]
